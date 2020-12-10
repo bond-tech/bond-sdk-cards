@@ -1,12 +1,14 @@
 # Bond Card Management JavaScript SDK
 
-This SDK aims to help the development of a brand's JavaScript integrations with
-[Bond](https://www.bond.tech/), providing an easy interface to transmit and
-manage PCI-sensitive data through a secure vault without housing it in Bond.
+Storing and processing card details including primary account number (PAN), CVV, expiration date, and personal identification number (PIN) involves complying with PCI DSS data security requirements. PCI compliance typically requires high overhead, so Bond created an SDK that vaults and tokenizes this card information. Using the below SDK, you can easily allow your customers to retrieve their card details, set PINs, and reset PINS without entering PCI scope, or worrying about seeing and storing your customers' sensitive card details.
+
+-This overview outlines Requirements, Installation, and Usage.
+-The Docs folder provides Bond Cards SDK Documentation you can run.
+-Then check out the sample files to see sample implementation you can build and run.
 
 ## Requirements
 
-To use this SDK, you will need:
+To use this SDK you can just import it using the steps under 'Installation'. But if you'd like to build the repo yourself, with or without sample files, you'll need:
 
 - [Node.js **v6.3.0 or above**](https://nodejs.org/)
 
@@ -34,10 +36,78 @@ Before executing any request, you need to authorize the calls to the Bond API:
 
 #### Using temporary tokens
 
-1. Make an authorized call with the correct customer_id to receive temporary
-   tokens of {Identity, Authorization}.
+1. Make an authorized call from your backend with the correct customer_id to
+   receive temporary tokens of {Identity, Authorization}.
+
+cURL
+
+```
+curl --request POST \
+  --url https://api.bond.tech/api/v0/auth/key/temporary \
+  --header 'Content-Type: application/json' \
+  --header 'Identity: [IDENTITY]' \
+  --header 'Authorization: [AUTHORIZATION]' \
+  --data '{"customer_id":[ID]}'
+```
+
+Python
+
+```python
+import requests
+
+url = "https://api.bond.tech/api/v0/auth/key/temporary"
+
+headers = { "Content-type": "application/json", "Identity": [IDENTITY], "Authorization": [AUTHORIZATION] }
+
+payload = { customer_id: [ID] }
+
+response = requests.request("POST", url, headers=headers, data=payload)
+
+print(response.text)
+```
+
+Ruby
+
+```ruby
+uri = URI.parse("https://api.bond.tech/api/v0/auth/key/temporary")
+params = {'customer_id' => [ID]}
+headers = {
+    'Content-Type'=>'application/json',
+    'Identity'=>[IDENTITY],
+    'Authorization'=>[AUTHORIZATION]
+}
+
+http = Net::HTTP.new(uri.host, uri.port)
+response = http.post(uri.path, params.to_json, headers)
+output = response.body
+puts output
+```
+
+Node
 
 ```js
+const fetch = require("node-fetch");
+
+let url = "https://api.bond.tech/api/v0/auth/key/temporary";
+let options = {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Identity: [IDENTITY],
+    Authorization: [AUTHORIZATION],
+  },
+  body: { customer_id: [ID] },
+};
+
+fetch(url, options)
+  .then((res) => res.json())
+  .then((json) => console.log(json))
+  .catch((err) => console.error("error:" + err));
+```
+
+```js
+// Client-side example for quick testing.
+// You would call this from your backend in production
 fetch("https://api.bond.tech/api/v0/auth/key/temporary", {
   method: "POST",
   headers: {
@@ -49,6 +119,38 @@ fetch("https://api.bond.tech/api/v0/auth/key/temporary", {
     customer_id: [ID],
   },
 });
+```
+
+Java
+
+```
+OkHttpClient client = new OkHttpClient();
+
+Request request = new Request.Builder()
+  .url("https://api.bond.tech/api/v0/auth/key/temporary")
+  .addHeader("Content-Type", "application/json")
+  .addHeader("Identity", [IDENTITY])
+  .addHeader("Authorization", [AUTHORIZATION])
+  .post(RequestBody
+                .create(MediaType
+                    .parse("application/json"),
+                        "{\"customer_id\": \"" + ID + "\"}"
+                ))
+  .build();
+
+Response response = client.newCall(request).execute();
+```
+
+C#
+
+```
+var client = new RestClient("https://api.bond.tech/api/v0/auth/key/temporary");
+var request = new RestRequest(Method.POST);
+request.AddHeader("Content-Type", "application/json");
+request.AddHeader("Identity", [IDENTITY]);
+request.AddHeader("Authorization", [AUTHORIZATION]);
+request.AddParameter("application/json", {"customer_id": [ID]}, ParameterType.RequestBody);
+IRestResponse response = client.Execute(request);
 ```
 
 #### Initialize BondCards
