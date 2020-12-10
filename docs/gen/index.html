@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Documentation Index</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Documentation</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="BondCards.html">BondCards</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html">Global</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+
+
+
+
+
+    <section class="readme-section">
+        <article><h1>Bond Card Management JavaScript SDK</h1>
+<p>This SDK aims to help the development of a brand's JavaScript integrations with
+<a href="https://www.bond.tech/">Bond</a>, providing an easy interface to transmit and
+manage PCI-sensitive data through a secure vault without housing it in Bond.</p>
+<h2>Requirements</h2>
+<p>To use this SDK, you will need:</p>
+<ul>
+<li><a href="https://nodejs.org/">Node.js <strong>v6.3.0 or above</strong></a></li>
+</ul>
+<p>Node installation will include <a href="https://www.npmjs.com/">NPM</a>, which is
+responsible for dependency management.</p>
+<h2>Installation</h2>
+<h3>JS</h3>
+<p><code>import BondCards from 'https://www.bond.tech/sdk/1.0/bond-sdk-cards.js';</code></p>
+<h3>HTML</h3>
+<script type="text/javascript" src="https://www.bond.tech/sdk/1.0/bond-sdk-cards.js"></script>
+<h2>Usage</h2>
+<p>This SDK relies heavily on <a href="https://developers.google.com/web/fundamentals/getting-started/primers/promises">Promises</a>,
+making it easier to handle the asynchronous requests made to the API. The SDK
+provides a <code>BondCards</code> object containing several methods which map to the
+calls and parameters described in
+<a href="https://dash.readme.com/project/bond-baas-api/v1.0/docs/retrieve-card-details-set-pins-and-reset-pins">BondCards's API documentation</a>.</p>
+<p>The following snippet is a generic example of how brands can use the SDK. If you need
+details for a specific module, refer to the
+<a href="https://github.com/bond-tech/bond-sdk-cards">sample files</a>.</p>
+<p>Before executing any request, you need to authorize the calls to the Bond API:</p>
+<h4>Using temporary tokens</h4>
+<ol>
+<li>Make an authorized call with the correct customer_id to receive temporary
+tokens of {Identity, Authorization}.</li>
+</ol>
+<pre class="prettyprint source lang-js"><code>fetch(&quot;https://api.bond.tech/api/v0/auth/key/temporary&quot;, {
+  method: &quot;POST&quot;,
+  headers: {
+    &quot;Content-type&quot;: &quot;application/json&quot;,
+    Identity: identity,
+    Authorization: authorization,
+  },
+  body: {
+    customer_id: [ID],
+  },
+});
+</code></pre>
+<h4>Initialize BondCards</h4>
+<ol start="2">
+<li>Call the constructor ( 'live: false' to access the Sandbox environment )</li>
+</ol>
+<pre class="prettyprint source lang-js"><code>const bondCards = new BondCards({ live: true });
+</code></pre>
+<h4>Making requests</h4>
+<ol start="3">
+<li>You can now use the various methods from the SDK to reveal/manage PCI-sensitive
+data for a particular Bond Card ID. Following the Promises notation, you should
+use<code>.then()</code>/<code>.catch()</code> to handle the successful and failed requests,
+respectively.</li>
+</ol>
+<p>Most of the calls take an object as the only parameter but please refer to the
+API documentation to tune the query as intended.</p>
+<pre class="prettyprint source lang-js"><code>bondCards
+  .show({
+    cardId: [BOND CARD ID],
+    identity: [TEMP IDENTITY TOKEN],
+    authorization: [TEMP AUTH TOKEN],
+    field: &quot;number&quot;,
+    htmlSelector: &quot;#num&quot;,
+  })
+  .then((data) => {
+    // Handle data
+  })
+  .catch((error) => {
+    // Handle an error
+  });
+</code></pre>
+<h2>Available methods</h2>
+<h3>Working with the Repo</h3>
+<ol start="4">
+<li>The following script aliases are available:</li>
+</ol>
+<ul>
+<li><code>npm run test</code>: Run Unit Tests</li>
+<li><code>npm run doc</code>: Run JSDoc to create a 'docs' folder with automatically
+generated documentation for the source code.</li>
+<li><code>npm run build</code>: Create a production build minified and transpiled js bundle
+without any sample code.</li>
+<li><code>npm run start</code>: Lint SDK and Sample files, then Deploy a web server from the
+root folder at <code>localhost:8080</code> to run the html samples.</li>
+</ul></article>
+    </section>
+
+
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a>
+	
+		on December 10th 2020, 3:56:07 am
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>
