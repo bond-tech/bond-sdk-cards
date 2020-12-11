@@ -122,7 +122,7 @@ class BondCards {
   }) {
     const requestParams = {
       type: "card-number",
-      validations: ["required"],
+      validations: type === "new_pin" ? ["required"] : [],
       name: type,
       css,
       placeholder,
