@@ -19,9 +19,11 @@ responsible for dependency management.
 
 ### JS
 
-`import BondCards from 'https://www.bond.tech/sdk/1.0/bond-sdk-cards.js';`
+`import BondCards from 'cdn.bond.tech/sdk/cards/v1/bond-sdk-cards.js';`
 
-<script type="text/javascript" src="https://www.bond.tech/sdk/1.0/bond-sdk-cards.js"></script>
+### HTML
+
+<script type="text/javascript" src="cdn.bond.tech/sdk/cards/v1/bond-sdk-cards.js"></script>
 
 ## Usage
 
@@ -45,9 +47,9 @@ cURL
 curl --request POST \
   --url https://api.bond.tech/api/v0/auth/key/temporary \
   --header 'Content-Type: application/json' \
-  --header 'Identity: [IDENTITY]' \
-  --header 'Authorization: [AUTHORIZATION]' \
-  --data '{"customer_id":[ID]}'
+  --header 'Identity: YOUR_IDENTITY' \
+  --header 'Authorization: YOUR_AUTHORIZATION' \
+  --data '{"customer_id": "YOUR_CUSTOMER_ID"}'
 ```
 
 Python
@@ -57,11 +59,11 @@ import requests
 
 url = "https://api.bond.tech/api/v0/auth/key/temporary"
 
-headers = { "Content-type": "application/json", "Identity": [IDENTITY], "Authorization": [AUTHORIZATION] }
+headers = { "Content-type": "application/json", "Identity": "YOUR_IDENTITY", "Authorization": "YOUR_AUTHORIZATION" }
 
-payload = { customer_id: [ID] }
+payload = { 'customer_id': 'YOUR_CUSTOMER_ID' }
 
-response = requests.request("POST", url, headers=headers, data=payload)
+response = requests.post(url, headers=headers, json=payload)
 
 print(response.text)
 ```
@@ -70,11 +72,11 @@ Ruby
 
 ```ruby
 uri = URI.parse("https://api.bond.tech/api/v0/auth/key/temporary")
-params = {'customer_id' => [ID]}
+params = {'customer_id' => 'YOUR_CUSTOMER_ID'}
 headers = {
     'Content-Type'=>'application/json',
-    'Identity'=>[IDENTITY],
-    'Authorization'=>[AUTHORIZATION]
+    'Identity'=>'YOUR_IDENTITY',
+    'Authorization'=>'YOUR_AUTHORIZATION'
 }
 
 http = Net::HTTP.new(uri.host, uri.port)
@@ -93,10 +95,10 @@ let options = {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    Identity: [IDENTITY],
-    Authorization: [AUTHORIZATION],
+    Identity: "YOUR_IDENTITY",
+    Authorization: "YOUR_AUTHORIZATION",
   },
-  body: { customer_id: [ID] },
+  body: { customer_id: "YOUR_CUSTOMER_ID" },
 };
 
 fetch(url, options)
@@ -105,18 +107,21 @@ fetch(url, options)
   .catch((err) => console.error("error:" + err));
 ```
 
+Javascript
+
 ```js
 // Client-side example for quick testing.
 // You would call this from your backend in production
+
 fetch("https://api.bond.tech/api/v0/auth/key/temporary", {
   method: "POST",
   headers: {
     "Content-type": "application/json",
-    Identity: identity,
-    Authorization: authorization,
+    Identity: "YOUR_IDENTITY",
+    Authorization: "YOUR_AUTHORIZATION",
   },
   body: {
-    customer_id: [ID],
+    customer_id: "YOUR_CUSTOMER_ID",
   },
 });
 ```
@@ -129,12 +134,12 @@ OkHttpClient client = new OkHttpClient();
 Request request = new Request.Builder()
   .url("https://api.bond.tech/api/v0/auth/key/temporary")
   .addHeader("Content-Type", "application/json")
-  .addHeader("Identity", [IDENTITY])
-  .addHeader("Authorization", [AUTHORIZATION])
+  .addHeader("Identity", "YOUR_IDENTITY")
+  .addHeader("Authorization", "YOUR_AUTHORIZATION")
   .post(RequestBody
                 .create(MediaType
                     .parse("application/json"),
-                        "{\"customer_id\": \"" + ID + "\"}"
+                        "{\"customer_id\": \"" + YOUR_CUSTOMER_ID + "\"}"
                 ))
   .build();
 
@@ -147,9 +152,9 @@ C#
 var client = new RestClient("https://api.bond.tech/api/v0/auth/key/temporary");
 var request = new RestRequest(Method.POST);
 request.AddHeader("Content-Type", "application/json");
-request.AddHeader("Identity", [IDENTITY]);
-request.AddHeader("Authorization", [AUTHORIZATION]);
-request.AddParameter("application/json", {"customer_id": [ID]}, ParameterType.RequestBody);
+request.AddHeader("Identity", "YOUR_IDENTITY");
+request.AddHeader("Authorization", "YOUR_AUTHORIZATION");
+request.AddParameter("application/json", {"customer_id": "YOUR_CUSTOMER_ID"}, ParameterType.RequestBody);
 IRestResponse response = client.Execute(request);
 ```
 
