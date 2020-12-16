@@ -94,11 +94,12 @@
 
     <section class="readme-section">
         <article><h1>Bond Card Management JavaScript SDK</h1>
-<p>This SDK aims to help the development of a brand's JavaScript integrations with
-<a href="https://www.bond.tech/">Bond</a>, providing an easy interface to transmit and
-manage PCI-sensitive data through a secure vault without housing it in Bond.</p>
+<p>Storing and processing card details including primary account number (PAN), CVV, expiration date, and personal identification number (PIN) involves complying with PCI DSS data security requirements. PCI compliance typically requires high overhead, so Bond created an SDK that vaults and tokenizes this card information. Using the below SDK, you can easily allow your customers to retrieve their card details, set PINs, and reset PINS without entering PCI scope, or worrying about seeing and storing your customers' sensitive card details.</p>
+<p>-This overview outlines Requirements, Installation, and Usage.
+-The Docs folder provides Bond Cards SDK Documentation you can run.
+-Then check out the sample files to see sample implementation you can build and run.</p>
 <h2>Requirements</h2>
-<p>To use this SDK, you will need:</p>
+<p>To use this SDK you can just import it using the steps under 'Installation'. But if you'd like to build the repo yourself, with or without sample files, you'll need:</p>
 <ul>
 <li><a href="https://nodejs.org/">Node.js <strong>v6.3.0 or above</strong></a></li>
 </ul>
@@ -106,35 +107,116 @@ manage PCI-sensitive data through a secure vault without housing it in Bond.</p>
 responsible for dependency management.</p>
 <h2>Installation</h2>
 <h3>JS</h3>
-<p><code>import BondCards from 'https://www.bond.tech/sdk/1.0/bond-sdk-cards.js';</code></p>
+<p><code>import BondCards from 'cdn.bond.tech/sdk/cards/v1/bond-sdk-cards.js';</code></p>
 <h3>HTML</h3>
-<script type="text/javascript" src="https://www.bond.tech/sdk/1.0/bond-sdk-cards.js"></script>
+<script type="text/javascript" src="cdn.bond.tech/sdk/cards/v1/bond-sdk-cards.js"></script>
 <h2>Usage</h2>
-<p>This SDK relies heavily on <a href="https://developers.google.com/web/fundamentals/getting-started/primers/promises">Promises</a>,
-making it easier to handle the asynchronous requests made to the API. The SDK
-provides a <code>BondCards</code> object containing several methods which map to the
-calls and parameters described in
-<a href="https://dash.readme.com/project/bond-baas-api/v1.0/docs/retrieve-card-details-set-pins-and-reset-pins">BondCards's API documentation</a>.</p>
+<p>This SDK relies heavily on <a href="https://developers.google.com/web/fundamentals/getting-started/primers/promises">Promises</a>, making it easier to handle the asynchronous
+requests made to the API. The SDK provides a <code>BondCards</code> object containing
+several methods which map to the calls and parameters described in <a href="https://docs.bond.tech/docs/retrieve-card-details-set-pins-and-reset-pins">BondCards's API documentation</a>.</p>
 <p>The following snippet is a generic example of how brands can use the SDK. If you need
-details for a specific module, refer to the
-<a href="https://github.com/bond-tech/bond-sdk-cards">sample files</a>.</p>
+details for a specific module, refer to the <a href="https://github.com/bond-tech/bond-sdk-cards">sample files</a>.</p>
 <p>Before executing any request, you need to authorize the calls to the Bond API:</p>
 <h4>Using temporary tokens</h4>
 <ol>
-<li>Make an authorized call with the correct customer_id to receive temporary
-tokens of {Identity, Authorization}.</li>
+<li>Make an authorized call from your backend with the correct customer_id to
+receive temporary tokens of {Identity, Authorization}.</li>
 </ol>
-<pre class="prettyprint source lang-js"><code>fetch(&quot;https://api.bond.tech/api/v0/auth/key/temporary&quot;, {
+<p>cURL</p>
+<pre class="prettyprint source"><code>curl --request POST \
+  --url https://api.bond.tech/api/v0/auth/key/temporary \
+  --header 'Content-Type: application/json' \
+  --header 'Identity: YOUR_IDENTITY' \
+  --header 'Authorization: YOUR_AUTHORIZATION' \
+  --data '{&quot;customer_id&quot;: &quot;YOUR_CUSTOMER_ID&quot;}'
+</code></pre>
+<p>Python</p>
+<pre class="prettyprint source lang-python"><code>import requests
+
+url = &quot;https://api.bond.tech/api/v0/auth/key/temporary&quot;
+
+headers = { &quot;Content-type&quot;: &quot;application/json&quot;, &quot;Identity&quot;: &quot;YOUR_IDENTITY&quot;, &quot;Authorization&quot;: &quot;YOUR_AUTHORIZATION&quot; }
+
+payload = { 'customer_id': 'YOUR_CUSTOMER_ID' }
+
+response = requests.post(url, headers=headers, json=payload)
+
+print(response.text)
+</code></pre>
+<p>Ruby</p>
+<pre class="prettyprint source lang-ruby"><code>uri = URI.parse(&quot;https://api.bond.tech/api/v0/auth/key/temporary&quot;)
+params = {'customer_id' => 'YOUR_CUSTOMER_ID'}
+headers = {
+    'Content-Type'=>'application/json',
+    'Identity'=>'YOUR_IDENTITY',
+    'Authorization'=>'YOUR_AUTHORIZATION'
+}
+
+http = Net::HTTP.new(uri.host, uri.port)
+response = http.post(uri.path, params.to_json, headers)
+output = response.body
+puts output
+</code></pre>
+<p>Node</p>
+<pre class="prettyprint source lang-js"><code>const fetch = require(&quot;node-fetch&quot;);
+
+let url = &quot;https://api.bond.tech/api/v0/auth/key/temporary&quot;;
+let options = {
+  method: &quot;POST&quot;,
+  headers: {
+    &quot;Content-Type&quot;: &quot;application/json&quot;,
+    Identity: &quot;YOUR_IDENTITY&quot;,
+    Authorization: &quot;YOUR_AUTHORIZATION&quot;,
+  },
+  body: { customer_id: &quot;YOUR_CUSTOMER_ID&quot; },
+};
+
+fetch(url, options)
+  .then((res) => res.json())
+  .then((json) => console.log(json))
+  .catch((err) => console.error(&quot;error:&quot; + err));
+</code></pre>
+<p>Javascript</p>
+<pre class="prettyprint source lang-js"><code>// Client-side example for quick testing.
+// You would call this from your backend in production
+
+fetch(&quot;https://api.bond.tech/api/v0/auth/key/temporary&quot;, {
   method: &quot;POST&quot;,
   headers: {
     &quot;Content-type&quot;: &quot;application/json&quot;,
-    Identity: identity,
-    Authorization: authorization,
+    Identity: &quot;YOUR_IDENTITY&quot;,
+    Authorization: &quot;YOUR_AUTHORIZATION&quot;,
   },
   body: {
-    customer_id: [ID],
+    customer_id: &quot;YOUR_CUSTOMER_ID&quot;,
   },
 });
+</code></pre>
+<p>Java</p>
+<pre class="prettyprint source"><code>OkHttpClient client = new OkHttpClient();
+
+Request request = new Request.Builder()
+  .url(&quot;https://api.bond.tech/api/v0/auth/key/temporary&quot;)
+  .addHeader(&quot;Content-Type&quot;, &quot;application/json&quot;)
+  .addHeader(&quot;Identity&quot;, &quot;YOUR_IDENTITY&quot;)
+  .addHeader(&quot;Authorization&quot;, &quot;YOUR_AUTHORIZATION&quot;)
+  .post(RequestBody
+                .create(MediaType
+                    .parse(&quot;application/json&quot;),
+                        &quot;{\&quot;customer_id\&quot;: \&quot;&quot; + YOUR_CUSTOMER_ID + &quot;\&quot;}&quot;
+                ))
+  .build();
+
+Response response = client.newCall(request).execute();
+</code></pre>
+<p>C#</p>
+<pre class="prettyprint source"><code>var client = new RestClient(&quot;https://api.bond.tech/api/v0/auth/key/temporary&quot;);
+var request = new RestRequest(Method.POST);
+request.AddHeader(&quot;Content-Type&quot;, &quot;application/json&quot;);
+request.AddHeader(&quot;Identity&quot;, &quot;YOUR_IDENTITY&quot;);
+request.AddHeader(&quot;Authorization&quot;, &quot;YOUR_AUTHORIZATION&quot;);
+request.AddParameter(&quot;application/json&quot;, {&quot;customer_id&quot;: &quot;YOUR_CUSTOMER_ID&quot;}, ParameterType.RequestBody);
+IRestResponse response = client.Execute(request);
 </code></pre>
 <h4>Initialize BondCards</h4>
 <ol start="2">
@@ -167,10 +249,9 @@ API documentation to tune the query as intended.</p>
   });
 </code></pre>
 <h2>Available methods</h2>
+<p>See <a href="https://github.com/bond-tech/bond-sdk-cards/docs/gen/BondCards.html">API Documentation</a></p>
 <h3>Working with the Repo</h3>
-<ol start="4">
-<li>The following script aliases are available:</li>
-</ol>
+<p>The following script aliases are available:</p>
 <ul>
 <li><code>npm run test</code>: Run Unit Tests</li>
 <li><code>npm run doc</code>: Run JSDoc to create a 'docs' folder with automatically
@@ -225,7 +306,7 @@ root folder at <code>localhost:8080</code> to run the html samples.</li>
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a>
 	
-		on December 10th 2020, 3:56:07 am
+		on December 16th 2020, 2:10:23 pm
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

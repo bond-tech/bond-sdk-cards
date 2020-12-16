@@ -1,0 +1,24 @@
+# build output
+dist
+build 
+
+# dependencies
+node_modules
+yarn.lock
+package-lock.json
+out
+
+# other
+.DS_Store
+.env
+env/
+
+/local
+/local/*
+
+scripts/dockerbuilder.sh
+scripts/local-builder.sh
+scripts/look-for-envvars.sh
+scripts/reset-original-files.sh
+
+.vscode/settings.json
