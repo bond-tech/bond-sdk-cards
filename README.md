@@ -22,10 +22,10 @@ responsible for dependency management.
 ### NPM
 
 To install the module in your repo use your terminal to type:
-`npm install bond-cards-sdk`
+`npm install bond-sdk-cards`
 
 Then import it in your Javascript code:
-`import BondCards from 'bond-cards-sdk';`
+`import BondCards from 'bond-sdk-cards';`
 
 ### CDN
 
