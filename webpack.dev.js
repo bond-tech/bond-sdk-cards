@@ -17,6 +17,9 @@ module.exports = {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
     publicPath: "./",
+    library: "BondCards",
+    libraryTarget: "umd",
+    globalObject: "this",
   },
   module: {
     rules: [

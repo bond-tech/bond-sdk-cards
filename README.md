@@ -8,6 +8,8 @@ Storing and processing card details including primary account number (PAN), CVV,
 
 ## Requirements
 
+When working with [Bond](https://bond.tech), you'll create API Keys to enable access to the platform. Then you're ready to build.
+
 To use this SDK you can just import it using the steps under 'Installation'. But if you'd like to build the repo yourself, with or without sample files, you'll need:
 
 - [Node.js **v6.3.0 or above**](https://nodejs.org/)
@@ -17,11 +19,23 @@ responsible for dependency management.
 
 ## Installation
 
-### JS
+### NPM
+
+To install the module in your repo use your terminal to type:
+`npm install bond-sdk-cards`
+
+Then import it in your Javascript code:
+`import BondCards from 'bond-sdk-cards';`
+
+### CDN
+
+Or you can install the SDK from a CDN.
+
+#### Using JS
 
 `import BondCards from 'cdn.bond.tech/sdk/cards/v1/bond-sdk-cards.js';`
 
-### HTML
+#### Using HTML
 
 <script type="text/javascript" src="cdn.bond.tech/sdk/cards/v1/bond-sdk-cards.js"></script>
 
@@ -201,7 +215,6 @@ See [API Documentation](https://github.com/bond-tech/bond-sdk-cards/docs/gen/Bon
 
 The following script aliases are available:
 
-- `npm run test`: Run Unit Tests
 - `npm run doc`: Run JSDoc to create a 'docs' folder with automatically
   generated documentation for the source code.
 - `npm run build`: Create a production build minified and transpiled js bundle

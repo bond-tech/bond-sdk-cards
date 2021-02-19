@@ -1,5 +1,3 @@
-const BONDSTUDIO = "/api/v0/core/card";
-
 /**
  * @classdesc Represents the Bond Cards SDK. It allows developers to make
  * all calls to the APIs that securely store PCI data with a single function.
@@ -9,10 +7,11 @@ class BondCards {
   /**
    * Create a BondCards instance.
    * @constructor
-   * @param {boolean} [live=true] - Set to True to work with live data.
+   * @param {boolean} [live=true] Set to True to work with live data.
    * False for sandbox data
    */
   constructor({ live = false }) {
+    this.BONDSTUDIO = "/api/v0/card";
     // Internal Show.js initialization
     this.internalShow = window.VGSShow.create(
       live ? "tntmfo8fafa" : "tntc4x4iymh",
@@ -33,17 +32,17 @@ class BondCards {
 
   /**
    * @description Show appropriate card data
-   * @param {String} cardId - The unique ID used to identify a specific card.
-   * @param {String} identity - The temporary identity token allowing this call.
-   * @param {String} authorization - The temporary authorization token.
-   * @param {('number'|'cvv'|'expiry')} field - The field to get/show
-   * @param {String} [htmlWrapper="text"] - The expected type of response data.
+   * @param {String} cardId The unique ID used to identify a specific card.
+   * @param {String} identity The temporary identity token allowing this call.
+   * @param {String} authorization The temporary authorization token.
+   * @param {('number'|'cvv'|'expiry')} field The field to get/show
+   * @param {String} [htmlWrapper="text"] The expected type of response data.
    * 'image' is wrapped in an <img src='<revealed_data>'/> HTML tag. 'text'
    * would be inserted into a <span> element inside the iframe.
-   * @param {String} htmlSelector - A selector for the field/element where the
+   * @param {String} htmlSelector A selector for the field/element where the
    * iFrame will be placed.
-   * @param {Object} [css={}] - An object of CSS rules to apply to the response.
-   * @return {Promise} - Returns a Promise that, when fulfilled,
+   * @param {Object} [css={}] An object of CSS rules to apply to the response.
+   * @return {Promise} Returns a Promise that, when fulfilled,
    * will either return an iFrame with the appropriate data or an error.
    */
   show({
@@ -68,7 +67,7 @@ class BondCards {
         Identity: identity,
         Authorization: authorization,
       },
-      path: `${BONDSTUDIO}/${cardId}`,
+      path: `${this.BONDSTUDIO}/${cardId}`,
       name: field,
       // The JSONPath that the request will show the value for
       jsonPathSelector: fieldEnum[field],
@@ -87,22 +86,22 @@ class BondCards {
 
   /**
    * @description Initilize a Field in a Form to submit for card manipulation
-   * @param {String} selector - CSS selector that points to the element where
+   * @param {String} selector CSS selector that points to the element where
    * the field will be added.
-   * @param {('current_pin'|'new_pin')} type - The type of the field targeted.
-   * @param {Object} [css={}] - An object of CSS rules to apply to the field.
-   * @param {String} [placeholder] - Text displayed when the field is empty.
-   * @param {String} [successColor] - Text color when the field is valid.
-   * @param {String} [errorColor]	- Text color when the field is invalid.
-   * @param {String} [color] - Text color.
-   * @param {String} [lineHeight]	- Line height value.
-   * @param {String} [fontSize]	- Size of text.
-   * @param {String} [fontFamily]	- font family used in the text.
-   * @param {'disabled'} [disabled] - Specifies that the input field is disabled.
-   * @param {'readonly'} [readOnly] - Specifies that the input field is read only.
-   * @param {String} [autoFocus] - Specifies that the input field should
+   * @param {('current_pin'|'new_pin')} type The type of the field targeted.
+   * @param {Object} [css={}] An object of CSS rules to apply to the field.
+   * @param {String} [placeholder] Text displayed when the field is empty.
+   * @param {String} [successColor] Text color when the field is valid.
+   * @param {String} [errorColor] Text color when the field is invalid.
+   * @param {String} [color] Text color.
+   * @param {String} [lineHeight] Line height value.
+   * @param {String} [fontSize] Size of text.
+   * @param {String} [fontFamily] font family used in the text.
+   * @param {'disabled'} [disabled] Specifies that the input field is disabled.
+   * @param {'readonly'} [readOnly] Specifies that the input field is read only.
+   * @param {String} [autoFocus] Specifies that the input field should
    * automatically get focus when the page loads.
-   * @return {Promise} - Returns a Promise that, when fulfilled,
+   * @return {Promise} Returns a Promise that, when fulfilled,
    * will either initialize the field or return an error.
    */
   field({
@@ -149,28 +148,28 @@ class BondCards {
 
   /**
    * @callback successCallback
-   * @param {String} status - HTTP status code of HTTPRequest
-   * @param {Object} response - Data object of the response
+   * @param {String} status HTTP status code of HTTPRequest
+   * @param {Object} response Data object of the response
    */
 
   /**
    * @callback errorCallback
-   * @param {Object} errors - Object of the error messages
+   * @param {Object} errors Object of the error messages
    */
 
   /**
    * @description Show appropriate card data
-   * @param {String} cardId - The unique ID used to identify a specific card.
-   * @param {String} identity - The temporary identity token allowing this call.
-   * @param {String} authorization - The temporary authorization token.
-   * @param {String} currentPin - The value of the current pin number.
-   * @param {String} newPin - The value of the new pin number.
-   * @param {successCallback} callback - Function that will be executed
+   * @param {String} cardId The unique ID used to identify a specific card.
+   * @param {String} identity The temporary identity token allowing this call.
+   * @param {String} authorization The temporary authorization token.
+   * @param {String} currentPin The value of the current pin number.
+   * @param {String} newPin The value of the new pin number.
+   * @param {successCallback} callback Function that will be executed
    * when the HTTPRequest has finished successfully.
-   * @param {errorCallback} callback - Function Error handling callback. Will be
+   * @param {errorCallback} callback Function Error handling callback. Will be
    * triggered if one of the fields has an invalid value on submit. By default,
    * it will push the error messages to the console.
-   * @return {Promise} - Returns a Promise that, when fulfilled,
+   * @return {Promise} Returns a Promise that, when fulfilled,
    * will either return an iFrame with the appropriate data or an error.
    */
   submit({
@@ -198,7 +197,7 @@ class BondCards {
 
     return new Promise((resolve, reject) => {
       const submitResult = this.internalForm.submit(
-        `${BONDSTUDIO}/set_pin`,
+        `${this.BONDSTUDIO}/set_pin`,
         options,
         successCallback,
         errorCallback

@@ -1,6 +1,6 @@
 {
-  "name": "@bond-tech/bond-sdk-cards",
-  "version": "1.0.0",
+  "name": "bond-sdk-cards",
+  "version": "1.0.3",
   "description": "Bond Card Management SDK",
   "main": "./dist/bond-sdk-cards.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "json-loader": "^0.5.7",
     "path": "^0.12.7",
     "style-loader": "^2.0.0",
-    "webpack": "^5.10.0",
+    "webpack": "^5.10.3",
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0"
   },
