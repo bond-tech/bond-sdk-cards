@@ -21,9 +21,9 @@ jobs:
   push_to_cdn:
     executor: aws-cli/default
     steps:
+      - checkout
       - attach_workspace:
           at: dist
-      - checkout
       - aws-cli/setup:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
