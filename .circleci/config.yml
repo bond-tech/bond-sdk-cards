@@ -34,9 +34,9 @@ jobs:
           command: |
             # get version from code? card or cards?
             FULL_VERSION=$( sed -En 's/[ ]*"version"[ ]*:[ ]*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/p' package.json )
-            MAJOR_VERSION=$( echo ${VERSION} | cut -d'.' -f1 )
-            MINOR_VERSION=$( echo ${VERSION} | cut -d'.' -f2 )
-            PATCH_VERSION=$( echo ${VERSION} | cut -d'.' -f3 )
+            MAJOR_VERSION=$( echo ${FULL_VERSION} | cut -d'.' -f1 )
+            MINOR_VERSION=$( echo ${FULL_VERSION} | cut -d'.' -f2 )
+            PATCH_VERSION=$( echo ${FULL_VERSION} | cut -d'.' -f3 )
             aws s3 cp dist/bond-sdk-cards.js s3://bond-prod-web-assets/sdk/cards/archive/v${FULL_VERSION}-${CIRCLE_BRANCH}-${CIRCLE_SHA1}.js
             if [[ ${CIRCLE_BRANCH} =~ main ]] ; then
               aws s3 cp dist/bond-sdk-cards.js s3://bond-prod-web-assets/sdk/cards/v${MAJOR_VERSION}/bond-sdk-cards.js
