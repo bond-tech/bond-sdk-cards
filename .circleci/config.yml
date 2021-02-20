@@ -1,0 +1,48 @@
+version: 2.1
+
+#Orb importing
+orbs:
+  aws-cli: circleci/aws-cli@1.4.0
+
+jobs:
+
+  build:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run build
+      - persist_to_workspace:
+          root: dist
+          paths:
+            - dist/?*
+
+  push_to_cdn:
+    executor: aws-cli/default
+    steps:
+      - attach_workspace:
+          at: dist
+      - run: ls -al dist
+      - aws-cli/setup:
+          aws-access-key-id: ${AWS_ACCESS_KEY_ID}
+          aws-secret-access-key: ${AWS_SECRET_ACCESS_KEY}
+          profile-name: default
+      - run: 
+          name: push
+          command: |
+            # get version from code? card or cards?
+            aws s3 cp dist/bond-sdk-cards.js s3://bond-prod-web-assets/sdk/cards/archive/${CIRCLE_BRANCH}-${CIRCLE_SHA1}.js
+            [[ ${CIRCLE_BRANCH} =~ main ]] \
+              && aws s3 cp dist/bond-sdk-cards.js s3://bond-prod-web-assets/sdk/cards/v0/bond-sdk-cards.js
+
+workflows:
+
+  version: 2.1
+
+  pipeline:
+    jobs:
+      - build
+      - push_to_cdn:
+          requires: 
+            - build
