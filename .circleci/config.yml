@@ -16,7 +16,7 @@ jobs:
       - persist_to_workspace:
           root: dist
           paths:
-            - dist/?*
+            - ?*
 
   push_to_cdn:
     executor: aws-cli/default
