@@ -1,0 +1,54 @@
+version: 2.1
+
+#Orb importing
+orbs:
+  aws-cli: circleci/aws-cli@1.4.0
+
+jobs:
+
+  build:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run build
+      - persist_to_workspace:
+          root: dist
+          paths:
+            - ?*
+
+  push_to_cdn:
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - attach_workspace:
+          at: dist
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          aws-region: AWS_REGION
+          profile-name: default
+      - run: 
+          name: push
+          command: |
+            FULL_VERSION=$( sed -En 's/[ ]*"version"[ ]*:[ ]*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/p' package.json )
+            MAJOR_VERSION=$( echo ${FULL_VERSION} | cut -d'.' -f1 )
+            MINOR_VERSION=$( echo ${FULL_VERSION} | cut -d'.' -f2 )
+            PATCH_VERSION=$( echo ${FULL_VERSION} | cut -d'.' -f3 )
+            aws s3 cp dist/bond-sdk-cards.js s3://bond-prod-web-assets/sdk/cards/archive/v${FULL_VERSION}-${CIRCLE_BRANCH}-${CIRCLE_SHA1}.js
+            if [[ ${CIRCLE_BRANCH} =~ ^main$ ]] ; then
+              aws s3 cp dist/bond-sdk-cards.js s3://bond-prod-web-assets/sdk/cards/v${MAJOR_VERSION}/bond-sdk-cards.js
+              aws s3 cp dist/bond-sdk-cards.js s3://bond-prod-web-assets/sdk/cards/v/${MAJOR_VERSION}/${MINOR_VERSION}/${PATCH_VERSION}/bond-sdk-cards.js
+            fi
+
+workflows:
+
+  version: 2.1
+
+  pipeline:
+    jobs:
+      - build
+      - push_to_cdn:
+          requires: 
+            - build
