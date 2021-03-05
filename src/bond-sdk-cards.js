@@ -74,8 +74,6 @@ class BondCards {
       htmlWrapper,
     };
 
-    console.log(requestParams);
-
     return new Promise((resolve, reject) => {
       const newIframe = this.internalShow.request(requestParams);
       if (newIframe) {
