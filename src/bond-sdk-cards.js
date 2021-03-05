@@ -11,7 +11,7 @@ class BondCards {
    * False for sandbox data
    */
   constructor({ live = false }) {
-    this.BONDSTUDIO = "/api/v0/card";
+    this.BONDSTUDIO = "/api/v0/cards";
     // Internal Show.js initialization
     this.internalShow = window.VGSShow.create(
       live ? "tntmfo8fafa" : "tntc4x4iymh",
