@@ -31,7 +31,7 @@ class BondCards {
   }
 
   /**
-   * @description Show appropriate card data
+   * @description Show card data including number, expiry, cvv
    * @param {String} cardId The unique ID used to identify a specific card.
    * @param {String} identity The temporary identity token allowing this call.
    * @param {String} authorization The temporary authorization token.
@@ -83,6 +83,56 @@ class BondCards {
       }
     });
   }
+
+  /**
+   * @description Show card PIN data
+   * @param {String} cardId The unique ID used to identify a specific card.
+   * @param {String} identity The temporary identity token allowing this call.
+   * @param {String} authorization The temporary authorization token.
+   * @param {Boolean} [reset=false] Reset the PIN and view
+   * @param {String} [htmlWrapper="text"] The expected type of response data.
+   * 'image' is wrapped in an <img src='<revealed_data>'/> HTML tag. 'text'
+   * would be inserted into a <span> element inside the iframe.
+   * @param {String} htmlSelector A selector for the field/element where the
+   * iFrame will be placed.
+   * @param {Object} [css={}] An object of CSS rules to apply to the response.
+   * @return {Promise} Returns a Promise that, when fulfilled,
+   * will either return an iFrame with the appropriate data or an error.
+   */
+  showPIN({
+    cardId,
+    identity,
+    authorization,
+    reset = false,
+    htmlWrapper = "text",
+    htmlSelector,
+    css = {},
+  }) {
+
+    const requestParams = {
+      method: reset ? "PATCH" : "GET",
+      headers: {
+        "Content-type": "application/json",
+        Identity: identity,
+        Authorization: authorization,
+      },
+      path: `${this.BONDSTUDIO}/${cardId}/pin`,
+      name: "pin",
+      // The JSONPath that the request will show the value for
+      jsonPathSelector: "pin",
+      htmlWrapper,
+    };
+
+    return new Promise((resolve, reject) => {
+      const newIframe = this.internalShow.request(requestParams);
+      if (newIframe) {
+        resolve(newIframe.render(htmlSelector, css));
+      } else {
+        reject();
+      }
+    });
+  }
+
 
   /**
    * @description Initilize a Field in a Form to submit for card manipulation
