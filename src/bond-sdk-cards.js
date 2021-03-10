@@ -252,6 +252,8 @@ class BondCards {
       console.log( `NOT adding current pin: ${currentPin}` );
     }
 
+    console.log(options);
+
     return new Promise((resolve, reject) => {
       const submitResult = this.internalForm.submit(
         `${this.BONDSTUDIO}/set_pin`,
