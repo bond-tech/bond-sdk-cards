@@ -248,6 +248,8 @@ class BondCards {
     if( currentPin && currentPin.length > 0 ) {
       console.log( `adding current pin: ${currentPin}` );
       options.data.current_pin = currentPin;
+    } else {
+      console.log( `NOT adding current pin: ${currentPin}` );
     }
 
     return new Promise((resolve, reject) => {
