@@ -244,16 +244,6 @@ class BondCards {
       },
     };
 
-    // add currentPin only if provided and not trivial
-    if( currentPin && currentPin.length > 0 ) {
-      console.log( `adding current pin: ${currentPin}` );
-      options.data.current_pin = currentPin;
-    } else {
-      console.log( `NOT adding current pin: ${currentPin}` );
-    }
-
-    console.log(options);
-
     return new Promise((resolve, reject) => {
       const submitResult = this.internalForm.submit(
         `${this.BONDSTUDIO}/set_pin`,
