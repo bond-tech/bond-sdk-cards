@@ -244,8 +244,8 @@ class BondCards {
       },
     };
 
-    // add currentPin only if provided
-    if( currentPin ) {
+    // add currentPin only if provided and not trivial
+    if( currentPin && currentPin.length > 0 ) {
       options.data.current_pin = currentPin;
     }
 
