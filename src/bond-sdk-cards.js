@@ -226,7 +226,7 @@ class BondCards {
     cardId,
     identity,
     authorization,
-    currentPin,
+    currentPin = undefined,
     newPin,
     successCallback,
     errorCallback,
@@ -240,10 +240,14 @@ class BondCards {
       },
       data: {
         card_id: cardId,
-        current_pin: currentPin,
         new_pin: newPin,
       },
     };
+
+    // add currentPin only if provided
+    if( currentPin ) {
+      options.data.current_pin = currentPin;
+    }
 
     return new Promise((resolve, reject) => {
       const submitResult = this.internalForm.submit(
