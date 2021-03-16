@@ -221,3 +221,11 @@ The following script aliases are available:
   without any sample code.
 - `npm run start`: Lint SDK and Sample files, then Deploy a web server from the
   root folder at `localhost:8080` to run the html samples.
+
+### Developing the BondCards SDK
+
+To handle all implementation use cases, Engineers should always build this
+project (`npm run build`) before committing.
+
+Include the /dist folder in your commit for customers that link to the built
+bond-sdk-cards.js file directly.
