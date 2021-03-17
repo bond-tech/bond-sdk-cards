@@ -18,6 +18,7 @@ class BondCards {
       function (state) {}
     );
     this.internalShow.request = this.internalShow.__proto__.request;
+    this.internalShow.replace = this.internalShow.SERIALIZERS.replace;
 
     // // Internal Collect.js initialization
     this.internalForm = window.VGSCollect.create(
@@ -41,6 +42,15 @@ class BondCards {
    * would be inserted into a <span> element inside the iframe.
    * @param {String} htmlSelector A selector for the field/element where the
    * iFrame will be placed.
+   * @param {Object} [format] An objects containing a regex pattern to find and
+   * replace.
+   * @param {String} format.replaceThis String is to be replaced with the
+   * new value. Please use the format where regexp is not enclosed between
+   * slashes but do use quotation marks. ex: '(\\d{4})(\\d{4})(\\d{4})(\\d{4})'
+   * @param {String} format.withThis The string that replaces the substring
+   * specified by the specified regexp. ex: '$1-$2-$3-$4'
+   * @param {String} [format.count] Optional, defines how many times a certain
+   * string should be replaced.
    * @param {Object} [css={}] An object of CSS rules to apply to the response.
    * @return {Promise} Returns a Promise that, when fulfilled,
    * will either return an iFrame with the appropriate data or an error.
@@ -52,6 +62,7 @@ class BondCards {
     field,
     htmlWrapper = "text",
     htmlSelector,
+    format = {},
     css = {},
   }) {
     const fieldEnum = {
@@ -72,6 +83,16 @@ class BondCards {
       // The JSONPath that the request will show the value for
       jsonPathSelector: fieldEnum[field],
       htmlWrapper,
+      ...(format.hasOwnProperty("replaceThis") &&
+        format.hasOwnProperty("withThis") && {
+          serializers: [
+            this.internalShow.replace(
+              format.replaceThis,
+              format.withThis,
+              format.count
+            ),
+          ],
+        }),
     };
 
     return new Promise((resolve, reject) => {
@@ -108,7 +129,6 @@ class BondCards {
     htmlSelector,
     css = {},
   }) {
-
     const requestParams = {
       method: reset ? "PATCH" : "GET",
       headers: {
@@ -132,7 +152,6 @@ class BondCards {
       }
     });
   }
-
 
   /**
    * @description Initilize a Field in a Form to submit for card manipulation

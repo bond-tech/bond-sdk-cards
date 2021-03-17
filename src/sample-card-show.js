@@ -30,6 +30,10 @@ const reveal = () => {
       authorization: document.getElementById("authorization").value,
       field: "number",
       htmlSelector: "#num",
+      format: {
+        replaceThis: "(\\d{4})(\\d{4})(\\d{4})(\\d{4})",
+        withThis: "$1-$2-$3-$4",
+      },
       css,
     })
     .catch((error) => {
@@ -43,6 +47,10 @@ const reveal = () => {
       authorization: document.getElementById("authorization").value,
       field: "expiry",
       htmlSelector: "#exp",
+      format: {
+        replaceThis: "(\\d{2})(\\d{4})",
+        withThis: "$1/$2",
+      },
       css,
     })
     .catch((error) => {

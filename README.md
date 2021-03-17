@@ -198,6 +198,10 @@ bondCards
     authorization: [TEMP AUTH TOKEN],
     field: "number",
     htmlSelector: "#num",
+    format: {
+        replaceThis: "(\\d{4})(\\d{4})(\\d{4})(\\d{4})",
+        withThis: "$1-$2-$3-$4",
+      },
   })
   .then((data) => {
     // Handle data
