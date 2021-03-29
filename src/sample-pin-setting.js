@@ -19,7 +19,6 @@ bondCards
   .field({
     selector: "#cc-new-pin",
     type: "new_pin",
-    compareValue: true,
     successColor: "#4F8A10",
     errorColor: "#D8000C",
     placeholder: "5678",
@@ -32,7 +31,6 @@ bondCards
   .field({
     selector: "#cc-confirm-pin",
     type: "confirm_pin",
-    compareValue: true,
     successColor: "#4F8A10",
     errorColor: "#D8000C",
     placeholder: "5678",
