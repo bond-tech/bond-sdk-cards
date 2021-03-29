@@ -158,8 +158,6 @@ class BondCards {
    * @param {String} selector CSS selector that points to the element where
    * the field will be added.
    * @param {('current_pin'|'new_pin'|'confirm_pin')} type The type of the field targeted.
-   * @param {Boolean} [compareValue] Specify this on both fields that should
-   * match. ex: The user should type their PIN twice to confim there's no typo.
    * @param {Object} [css={}] An object of CSS rules to apply to the field.
    * @param {String} [placeholder] Text displayed when the field is empty.
    * @param {String} [successColor] Text color when the field is valid.
@@ -192,7 +190,14 @@ class BondCards {
     autoFocus,
   }) {
     const validations = type === "new_pin" ? ["required"] : [];
-    if (compareValue) validations.push("compareValue");
+    if (type === "confirm_pin")
+      validations.push({
+        type: "compareValue",
+        params: {
+          field: "new_pin",
+          function: "match",
+        },
+      });
 
     const requestParams = {
       type: "card-number",
