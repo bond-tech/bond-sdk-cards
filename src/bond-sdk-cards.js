@@ -106,27 +106,36 @@ class BondCards {
   }
 
   /**
+   * The FieldParams has all parameters regarding to card field
+   * @typedef {Object} FieldParams
+   * @property {String} [htmlWrapper="text"] The expected type of response data.
+   * 'image' is wrapped in an <img src='<revealed_data>'/> HTML tag. 'text'
+   * would be inserted into a <span> element inside the iframe.
+   * @property {String} htmlSelector A selector for the field/element where the
+   * iFrame will be placed.
+   * @property {Object} [format] An objects containing a regex pattern to find and
+   * replace.
+   * @property {String} format.replaceThis String is to be replaced with the
+   * new value. Please use the format where regexp is not enclosed between
+   * slashes but do use quotation marks. ex: '(\\d{4})(\\d{4})(\\d{4})(\\d{4})'
+   * @property {String} format.withThis The string that replaces the substring
+   * specified by the specified regexp. ex: '$1-$2-$3-$4'
+   * @property {String} [format.count] Optional, defines how many times a certain
+   * string should be replaced.
+   * @property {Object} [css={}] An object of CSS rules to apply to the response.
+   */
+
+  /**
+   * The FieldType
+   * @typedef {('number'|'cvv'|'expiry')} FieldType
+   */
+
+  /**
    * @description Show multiple card data fields including number, expiry, cvv
    * @param {String} cardId The unique ID used to identify a specific card.
    * @param {String} identity The temporary identity token allowing this call.
    * @param {String} authorization The temporary authorization token.
-   * @param {Object} fields An object containing the fields to request
-   * @param {('number'|'cvv'|'expiry')} fields.key The field name to get/show
-   * @param {String} fields.key.[htmlWrapper="text"] The expected type of response data.
-   * 'image' is wrapped in an <img src='<revealed_data>'/> HTML tag. 'text'
-   * would be inserted into a <span> element inside the iframe.
-   * @param {String} fields.key.htmlSelector A selector for the field/element where the
-   * iFrame will be placed.
-   * @param {Object} fields.key.[format] An objects containing a regex pattern to find and
-   * replace.
-   * @param {String} fields.key.format.replaceThis String is to be replaced with the
-   * new value. Please use the format where regexp is not enclosed between
-   * slashes but do use quotation marks. ex: '(\\d{4})(\\d{4})(\\d{4})(\\d{4})'
-   * @param {String} fields.key.format.withThis The string that replaces the substring
-   * specified by the specified regexp. ex: '$1-$2-$3-$4'
-   * @param {String} fields.key.[format.count] Optional, defines how many times a certain
-   * string should be replaced.
-   * @param {Object} fields.key.[css={}] An object of CSS rules to apply to the response.
+   * @param {Object.<FieldType, FieldParams>} fields An object containing the fields to request
    * @return {Promise} Returns a Promise that, when fulfilled,
    * will either return an iFrame with the appropriate data or an error.
    */
@@ -139,7 +148,7 @@ class BondCards {
     const fieldEnum = {
       number: "card_number",
       cvv: "cvv",
-      expiry: "expiry_dat",
+      expiry: "expiry_date",
     };
 
     const requestedFields = Object.entries(fields)
@@ -190,8 +199,7 @@ class BondCards {
       }
     }))
 
-
-    return Promise.all(promises);
+    return Promise.allSettled(promises);
   }
 
   /**
