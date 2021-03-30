@@ -106,6 +106,95 @@ class BondCards {
   }
 
   /**
+   * @description Show multiple card data fields including number, expiry, cvv
+   * @param {String} cardId The unique ID used to identify a specific card.
+   * @param {String} identity The temporary identity token allowing this call.
+   * @param {String} authorization The temporary authorization token.
+   * @param {Object} fields An object containing the fields to request
+   * @param {('number'|'cvv'|'expiry')} fields.key The field name to get/show
+   * @param {String} fields.key.[htmlWrapper="text"] The expected type of response data.
+   * 'image' is wrapped in an <img src='<revealed_data>'/> HTML tag. 'text'
+   * would be inserted into a <span> element inside the iframe.
+   * @param {String} fields.key.htmlSelector A selector for the field/element where the
+   * iFrame will be placed.
+   * @param {Object} fields.key.[format] An objects containing a regex pattern to find and
+   * replace.
+   * @param {String} fields.key.format.replaceThis String is to be replaced with the
+   * new value. Please use the format where regexp is not enclosed between
+   * slashes but do use quotation marks. ex: '(\\d{4})(\\d{4})(\\d{4})(\\d{4})'
+   * @param {String} fields.key.format.withThis The string that replaces the substring
+   * specified by the specified regexp. ex: '$1-$2-$3-$4'
+   * @param {String} fields.key.[format.count] Optional, defines how many times a certain
+   * string should be replaced.
+   * @param {Object} fields.key.[css={}] An object of CSS rules to apply to the response.
+   * @return {Promise} Returns a Promise that, when fulfilled,
+   * will either return an iFrame with the appropriate data or an error.
+   */
+  showMultiple({
+    cardId,
+    identity,
+    authorization,
+    fields,
+  }) {
+    const fieldEnum = {
+      number: "card_number",
+      cvv: "cvv",
+      expiry: "expiry_dat",
+    };
+
+    const requestedFields = Object.entries(fields)
+      .filter(([field]) => Object.keys(fieldEnum).includes(field))
+
+    if(Object.keys(fields).length !== requestedFields.length){
+      return Promise.reject(new Error('Incorrect field name present!'));
+    }
+
+    if(!requestedFields.length){
+      return Promise.reject(new Error('Have to be one or more fields!'));
+    }
+
+    const requests = requestedFields
+      .map(([field, { htmlWrapper = "text", format = {} }]) => {
+        return {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+            Identity: identity,
+            Authorization: authorization,
+          },
+          path: `${this.BONDSTUDIO}/${cardId}`,
+          name: field,
+          // The JSONPath that the request will show the value for
+          jsonPathSelector: fieldEnum[field],
+          htmlWrapper,
+          ...(format.hasOwnProperty("replaceThis") &&
+            format.hasOwnProperty("withThis") && {
+              serializers: [
+                this.internalShow.replace(
+                  format.replaceThis,
+                  format.withThis,
+                  format.count
+                ),
+              ],
+            }),
+        }
+      });
+
+    const promises = requests.map(requestParams => new Promise((resolve, reject) => {
+      const newIframe = this.internalShow.request(requestParams);
+      if (newIframe) {
+        const { htmlSelector, css = {} } = fields[requestParams.name];
+        resolve(newIframe.render(htmlSelector, css));
+      } else {
+        reject();
+      }
+    }))
+
+
+    return Promise.all(promises);
+  }
+
+  /**
    * @description Show card PIN data
    * @param {String} cardId The unique ID used to identify a specific card.
    * @param {String} identity The temporary identity token allowing this call.
