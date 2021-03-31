@@ -32,11 +32,16 @@ class BondCards {
   }
 
   /**
+   * The FieldType
+   * @typedef {('number'|'cvv'|'expiry')} FieldType
+   */
+
+  /**
    * @description Show card data including number, expiry, cvv
    * @param {String} cardId The unique ID used to identify a specific card.
    * @param {String} identity The temporary identity token allowing this call.
    * @param {String} authorization The temporary authorization token.
-   * @param {('number'|'cvv'|'expiry')} field The field to get/show
+   * @param {FieldType} field The field to get/show
    * @param {String} [htmlWrapper="text"] The expected type of response data.
    * 'image' is wrapped in an <img src='<revealed_data>'/> HTML tag. 'text'
    * would be inserted into a <span> element inside the iframe.
@@ -123,11 +128,6 @@ class BondCards {
    * @property {String} [format.count] Optional, defines how many times a certain
    * string should be replaced.
    * @property {Object} [css={}] An object of CSS rules to apply to the response.
-   */
-
-  /**
-   * The FieldType
-   * @typedef {('number'|'cvv'|'expiry')} FieldType
    */
 
   /**
