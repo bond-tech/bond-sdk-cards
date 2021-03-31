@@ -189,17 +189,45 @@ class BondCards {
         }
       });
 
-    const promises = requests.map(requestParams => new Promise((resolve, reject) => {
-      const newIframe = this.internalShow.request(requestParams);
-      if (newIframe) {
-        const { htmlSelector, css = {} } = fields[requestParams.name];
-        resolve(newIframe.render(htmlSelector, css));
-      } else {
-        reject();
-      }
-    }))
+    const createPromises = (requestsArr) => {
+      return requestsArr.map(requestParams => new Promise((resolve, reject) => {
+        const newIframe = this.internalShow.request(requestParams);
+        if (newIframe) {
+          const {htmlSelector, css = {}} = fields[requestParams.name];
+          resolve(newIframe.render(htmlSelector, css));
+        } else {
+          reject();
+        }
+      }));
+    }
 
-    return Promise.allSettled(promises);
+    const DEEP_NUMBER = 5;
+    let deep = 0;
+    const send = (requestsArr, fulfilledHashMap) => {
+      if(deep === DEEP_NUMBER){
+        return Object.values(fulfilledHashMap);
+      }
+
+      const promises = createPromises(requestsArr);
+
+      return Promise.allSettled(promises)
+          .then(response => {
+            const successfulRequests = response.filter(item => item.status === 'fulfilled');
+
+            if(successfulRequests.length === requests.length) {
+              return successfulRequests.map(item => item.value);
+            }
+
+            const fulfilledHash  = successfulRequests.reduce((acc, item) => ({...acc, [item.value.params.name]: item.value}), fulfilledHashMap || {});
+
+            const rejected = requestsArr.filter(requestParams => !Object.keys(fulfilledHash).includes(requestParams.name));
+
+            deep++;
+            return send(rejected, fulfilledHash);
+          });
+    }
+
+    return send(requests);
   }
 
   /**
