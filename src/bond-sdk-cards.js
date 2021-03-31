@@ -32,11 +32,16 @@ class BondCards {
   }
 
   /**
+   * The FieldType
+   * @typedef {('number'|'cvv'|'expiry')} FieldType
+   */
+
+  /**
    * @description Show card data including number, expiry, cvv
    * @param {String} cardId The unique ID used to identify a specific card.
    * @param {String} identity The temporary identity token allowing this call.
    * @param {String} authorization The temporary authorization token.
-   * @param {('number'|'cvv'|'expiry')} field The field to get/show
+   * @param {FieldType} field The field to get/show
    * @param {String} [htmlWrapper="text"] The expected type of response data.
    * 'image' is wrapped in an <img src='<revealed_data>'/> HTML tag. 'text'
    * would be inserted into a <span> element inside the iframe.
@@ -103,6 +108,136 @@ class BondCards {
         reject();
       }
     });
+  }
+
+  /**
+   * The FieldParams has all parameters regarding to card field
+   * @typedef {Object} FieldParams
+   * @property {String} [htmlWrapper="text"] The expected type of response data.
+   * 'image' is wrapped in an <img src='<revealed_data>'/> HTML tag. 'text'
+   * would be inserted into a <span> element inside the iframe.
+   * @property {String} htmlSelector A selector for the field/element where the
+   * iFrame will be placed.
+   * @property {Object} [format] An objects containing a regex pattern to find and
+   * replace.
+   * @property {String} format.replaceThis String is to be replaced with the
+   * new value. Please use the format where regexp is not enclosed between
+   * slashes but do use quotation marks. ex: '(\\d{4})(\\d{4})(\\d{4})(\\d{4})'
+   * @property {String} format.withThis The string that replaces the substring
+   * specified by the specified regexp. ex: '$1-$2-$3-$4'
+   * @property {String} [format.count] Optional, defines how many times a certain
+   * string should be replaced.
+   * @property {Object} [css={}] An object of CSS rules to apply to the response.
+   */
+
+  /**
+   * @description Show multiple card data fields including number, expiry, cvv
+   * @param {String} cardId The unique ID used to identify a specific card.
+   * @param {String} identity The temporary identity token allowing this call.
+   * @param {String} authorization The temporary authorization token.
+   * @param {Object.<FieldType, FieldParams>} fields An object containing the fields to request
+   * @return {Promise} Returns a Promise that, when fulfilled,
+   * will either return an iFrame with the appropriate data or an error.
+   */
+  showMultiple({
+    cardId,
+    identity,
+    authorization,
+    fields,
+  }) {
+    const fieldEnum = {
+      number: "card_number",
+      cvv: "cvv",
+      expiry: "expiry_date",
+    };
+
+    const requestedFields = Object.entries(fields)
+      .filter(([field]) => Object.keys(fieldEnum).includes(field))
+
+    if(Object.keys(fields).length !== requestedFields.length){
+      return Promise.reject(new Error('Incorrect field name present!'));
+    }
+
+    if(!requestedFields.length){
+      return Promise.reject(new Error('Have to be one or more fields!'));
+    }
+
+    const requests = requestedFields
+      .map(([field, { htmlWrapper = "text", format = {} }]) => {
+        return {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+            Identity: identity,
+            Authorization: authorization,
+          },
+          path: `${this.BONDSTUDIO}/${cardId}`,
+          name: field,
+          // The JSONPath that the request will show the value for
+          jsonPathSelector: fieldEnum[field],
+          htmlWrapper,
+          ...(format.hasOwnProperty("replaceThis") &&
+            format.hasOwnProperty("withThis") && {
+              serializers: [
+                this.internalShow.replace(
+                  format.replaceThis,
+                  format.withThis,
+                  format.count
+                ),
+              ],
+            }),
+        }
+      });
+
+    const createPromises = (requestsArr) => {
+      return requestsArr.map(requestParams => new Promise((resolve, reject) => {
+        const newIframe = this.internalShow.request(requestParams);
+        if (newIframe) {
+          // const {htmlSelector, css = {}} = fields[requestParams.name];
+          // resolve(newIframe.render(htmlSelector, css));
+          resolve({
+            params: requestParams,
+            newIframe,
+          });
+        } else {
+          reject();
+        }
+      }));
+    }
+
+    const DEEP_NUMBER = 5;
+    let deep = 0;
+    const send = (requestsArr, fulfilledHashMap) => {
+      if(deep === DEEP_NUMBER){
+        return Object.values(fulfilledHashMap).map(req => {
+          const {htmlSelector, css = {}} = fields[req.params.name];
+          return req.newIframe.render(htmlSelector, css)
+        });
+      }
+
+      const promises = createPromises(requestsArr);
+
+      return Promise.allSettled(promises)
+          .then(response => {
+            const successfulRequests = response.filter(item => item.status === 'fulfilled');
+
+            if(successfulRequests.length === requests.length) {
+              return successfulRequests.map(req => {
+                const {htmlSelector, css = {}} = fields[req.value.params.name];
+                return req.value.newIframe.render(htmlSelector, css)
+              });
+            }
+
+            const fulfilledHash  = successfulRequests.reduce((acc, item) => ({...acc, [item.value.params.name]: item.value}), fulfilledHashMap || {});
+
+            const rejected = requestsArr.filter(requestParams => !Object.keys(fulfilledHash).includes(requestParams.name));
+
+            deep++;
+            return send(rejected, fulfilledHash);
+          });
+    }
+
+    return send(requests);
   }
 
   /**

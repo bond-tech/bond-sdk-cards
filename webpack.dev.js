@@ -11,6 +11,7 @@ module.exports = {
       path.resolve(__dirname, "./src/bond-sdk-cards.js"),
     ],
     index: path.resolve(__dirname, "./src/sample-card-show.js"),
+    multiple: path.resolve(__dirname, "./src/sample-card-show-multiple.js"),
     pin: path.resolve(__dirname, "./src/sample-pin-setting.js"),
   },
   output: {
@@ -53,6 +54,12 @@ module.exports = {
       inject: true,
       chunks: ["bond-sdk-cards", "index"],
       filename: "index.html", // output file
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, "./src/sample_card_show_multiple.html"),
+      inject: true,
+      chunks: ["bond-sdk-cards", "multiple"],
+      filename: "sample_card_show_multiple.html", // output file
     }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "./src/sample_pin_setting.html"),

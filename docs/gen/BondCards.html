@@ -261,7 +261,7 @@ False for sandbox data</p></td>
             
 <hr>
 <dt>
-    <h4 class="name" id="field"><span class="type-signature"></span>field(selector, type [, compareValue] [, css] [, placeholder] [, successColor] [, errorColor] [, color] [, lineHeight] [, fontSize] [, fontFamily] [, disabled] [, readOnly] [, autoFocus])</h4>
+    <h4 class="name" id="field"><span class="type-signature"></span>field(selector, type [, css] [, placeholder] [, successColor] [, errorColor] [, color] [, lineHeight] [, fontSize] [, fontFamily] [, disabled] [, readOnly] [, autoFocus])</h4>
     
     
 </dt>
@@ -381,45 +381,6 @@ the field will be added.</p></td>
             
 
             <td class="description last"><p>The type of the field targeted.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>compareValue</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>Specify this on both fields that should
-match. ex: The user should type their PIN twice to confim there's no typo.</p></td>
         </tr>
 
     
@@ -1172,13 +1133,7 @@ will either initialize the field or return an error.</p>
             <td class="type">
             
                 
-<span class="param-type">'number'</span>
-|
-
-<span class="param-type">'cvv'</span>
-|
-
-<span class="param-type">'expiry'</span>
+<span class="param-type"><a href="global.html#FieldType">FieldType</a></span>
 
 
 
@@ -1490,6 +1445,231 @@ string should be replaced.</p></td>
             
 
             <td class="description last"><p>An object of CSS rules to apply to the response.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Returns a Promise that, when fulfilled,
+will either return an iFrame with the appropriate data or an error.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="showMultiple"><span class="type-signature"></span>showMultiple(cardId, identity, authorization, fields)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Show multiple card data fields including number, expiry, cvv</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>cardId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The unique ID used to identify a specific card.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>identity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The temporary identity token allowing this call.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>authorization</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The temporary authorization token.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fields</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;<a href="global.html#FieldType">FieldType</a>, <a href="global.html#FieldParams">FieldParams</a>></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>An object containing the fields to request</p></td>
         </tr>
 
     
@@ -2328,7 +2508,7 @@ will either return an iFrame with the appropriate data or an error.</p>
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a>
 	
-		on March 29th 2021, 10:59:16 am
+		on March 31st 2021, 8:27:18 pm
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
