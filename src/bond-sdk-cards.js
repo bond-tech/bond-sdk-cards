@@ -193,8 +193,12 @@ class BondCards {
       return requestsArr.map(requestParams => new Promise((resolve, reject) => {
         const newIframe = this.internalShow.request(requestParams);
         if (newIframe) {
-          const {htmlSelector, css = {}} = fields[requestParams.name];
-          resolve(newIframe.render(htmlSelector, css));
+          // const {htmlSelector, css = {}} = fields[requestParams.name];
+          // resolve(newIframe.render(htmlSelector, css));
+          resolve({
+            params: requestParams,
+            newIframe,
+          });
         } else {
           reject();
         }
@@ -205,7 +209,10 @@ class BondCards {
     let deep = 0;
     const send = (requestsArr, fulfilledHashMap) => {
       if(deep === DEEP_NUMBER){
-        return Object.values(fulfilledHashMap);
+        return Object.values(fulfilledHashMap).map(req => {
+          const {htmlSelector, css = {}} = fields[req.params.name];
+          return req.newIframe.render(htmlSelector, css)
+        });
       }
 
       const promises = createPromises(requestsArr);
@@ -215,7 +222,10 @@ class BondCards {
             const successfulRequests = response.filter(item => item.status === 'fulfilled');
 
             if(successfulRequests.length === requests.length) {
-              return successfulRequests.map(item => item.value);
+              return successfulRequests.map(req => {
+                const {htmlSelector, css = {}} = fields[req.value.params.name];
+                return req.value.newIframe.render(htmlSelector, css)
+              });
             }
 
             const fulfilledHash  = successfulRequests.reduce((acc, item) => ({...acc, [item.value.params.name]: item.value}), fulfilledHashMap || {});
