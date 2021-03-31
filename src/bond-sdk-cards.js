@@ -42,8 +42,8 @@ class BondCards {
    * would be inserted into a <span> element inside the iframe.
    * @param {String} htmlSelector A selector for the field/element where the
    * iFrame will be placed.
-   * @param {Object} [format] An objects containing a regex pattern to find and
-   * replace.
+   * @param {Object} [format] An object containing a regex pattern to find and
+   * replace in the response.
    * @param {String} format.replaceThis String is to be replaced with the
    * new value. Please use the format where regexp is not enclosed between
    * slashes but do use quotation marks. ex: '(\\d{4})(\\d{4})(\\d{4})(\\d{4})'
@@ -254,7 +254,7 @@ class BondCards {
    * @description Initilize a Field in a Form to submit for card manipulation
    * @param {String} selector CSS selector that points to the element where
    * the field will be added.
-   * @param {('current_pin'|'new_pin')} type The type of the field targeted.
+   * @param {('current_pin'|'new_pin'|'confirm_pin')} type The type of the field targeted.
    * @param {Object} [css={}] An object of CSS rules to apply to the field.
    * @param {String} [placeholder] Text displayed when the field is empty.
    * @param {String} [successColor] Text color when the field is valid.
@@ -263,8 +263,8 @@ class BondCards {
    * @param {String} [lineHeight] Line height value.
    * @param {String} [fontSize] Size of text.
    * @param {String} [fontFamily] font family used in the text.
-   * @param {'disabled'} [disabled] Specifies that the input field is disabled.
-   * @param {'readonly'} [readOnly] Specifies that the input field is read only.
+   * @param {Boolean} [disabled] Specifies that the input field is disabled.
+   * @param {Boolean} [readOnly] Specifies that the input field is read only.
    * @param {String} [autoFocus] Specifies that the input field should
    * automatically get focus when the page loads.
    * @return {Promise} Returns a Promise that, when fulfilled,
@@ -273,6 +273,7 @@ class BondCards {
   field({
     selector,
     type,
+    compareValue,
     css = {},
     placeholder,
     successColor,
@@ -285,9 +286,19 @@ class BondCards {
     readOnly,
     autoFocus,
   }) {
+    const validations = type === "new_pin" ? ["required"] : [];
+    if (type === "confirm_pin")
+      validations.push({
+        type: "compareValue",
+        params: {
+          field: "new_pin",
+          function: "match",
+        },
+      });
+
     const requestParams = {
       type: "card-number",
-      validations: type === "new_pin" ? ["required"] : [],
+      validations: validations,
       name: type,
       css,
       placeholder,
