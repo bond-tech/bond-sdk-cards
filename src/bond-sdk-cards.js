@@ -103,7 +103,14 @@ class BondCards {
     return new Promise((resolve, reject) => {
       const newIframe = this.internalShow.request(requestParams);
       if (newIframe) {
-        resolve(newIframe.render(htmlSelector, css));
+        const iframe = newIframe.render(htmlSelector, css);
+        const subscribe = (event) => {
+          if(event.data.messageName === "update" && event.data.payload.revealed === true){
+            resolve(iframe);
+            window.removeEventListener("message", subscribe);
+          }
+        };
+        window.addEventListener("message", subscribe, false);
       } else {
         reject();
       }
@@ -193,12 +200,18 @@ class BondCards {
       return requestsArr.map(requestParams => new Promise((resolve, reject) => {
         const newIframe = this.internalShow.request(requestParams);
         if (newIframe) {
-          // const {htmlSelector, css = {}} = fields[requestParams.name];
-          // resolve(newIframe.render(htmlSelector, css));
-          resolve({
-            params: requestParams,
-            newIframe,
-          });
+          const {htmlSelector, css = {}} = fields[requestParams.name];
+            const iframe = newIframe.render(htmlSelector, css);
+            const subscribe = (event) => {
+              if(event.data.messageName === "update" && event.data.payload.revealed === true){
+                resolve({
+                  params: requestParams,
+                  iframe,
+                });
+                window.removeEventListener("message", subscribe);
+              }
+            }
+            window.addEventListener("message", subscribe, false);
         } else {
           reject();
         }
@@ -210,8 +223,7 @@ class BondCards {
     const send = (requestsArr, fulfilledHashMap) => {
       if(deep === DEEP_NUMBER){
         return Object.values(fulfilledHashMap).map(req => {
-          const {htmlSelector, css = {}} = fields[req.params.name];
-          return req.newIframe.render(htmlSelector, css)
+          return req.iframe;
         });
       }
 
@@ -223,8 +235,7 @@ class BondCards {
 
             if(successfulRequests.length === requests.length) {
               return successfulRequests.map(req => {
-                const {htmlSelector, css = {}} = fields[req.value.params.name];
-                return req.value.newIframe.render(htmlSelector, css)
+                return req.value.iframe;
               });
             }
 
