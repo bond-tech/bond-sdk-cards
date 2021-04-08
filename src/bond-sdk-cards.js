@@ -105,7 +105,7 @@ class BondCards {
       if (newIframe) {
         const iframe = newIframe.render(htmlSelector, css);
         const subscribe = (event) => {
-          if(event.data.messageName === "update" && event.data.payload.revealed === true){
+          if (event.data.messageName === "update" && event.data.payload.revealed === true) {
             resolve(iframe);
             window.removeEventListener("message", subscribe);
           }
@@ -161,11 +161,11 @@ class BondCards {
     const requestedFields = Object.entries(fields)
       .filter(([field]) => Object.keys(fieldEnum).includes(field))
 
-    if(Object.keys(fields).length !== requestedFields.length){
+    if (Object.keys(fields).length !== requestedFields.length) {
       return Promise.reject(new Error('Incorrect field name present!'));
     }
 
-    if(!requestedFields.length){
+    if (!requestedFields.length) {
       return Promise.reject(new Error('Have to be one or more fields!'));
     }
 
@@ -203,7 +203,7 @@ class BondCards {
           const {htmlSelector, css = {}} = fields[requestParams.name];
             const iframe = newIframe.render(htmlSelector, css);
             const subscribe = (event) => {
-              if(event.data.messageName === "update" && event.data.payload.revealed === true){
+              if (event.data.messageName === "update" && event.data.payload.revealed === true) {
                 resolve({
                   params: requestParams,
                   iframe,
@@ -221,7 +221,7 @@ class BondCards {
     const DEEP_NUMBER = 5;
     let deep = 0;
     const send = (requestsArr, fulfilledHashMap) => {
-      if(deep === DEEP_NUMBER){
+      if (deep === DEEP_NUMBER) {
         return Object.values(fulfilledHashMap).map(req => {
           return req.iframe;
         });
@@ -233,7 +233,7 @@ class BondCards {
           .then(response => {
             const successfulRequests = response.filter(item => item.status === 'fulfilled');
 
-            if(successfulRequests.length === requests.length) {
+            if (successfulRequests.length === requests.length) {
               return successfulRequests.map(req => {
                 return req.value.iframe;
               });
