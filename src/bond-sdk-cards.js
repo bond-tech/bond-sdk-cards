@@ -305,13 +305,13 @@ class BondCards {
    * @param {Boolean} [readOnly] Specifies that the input field is read only.
    * @param {String} [autoFocus] Specifies that the input field should
    * automatically get focus when the page loads.
+   * @param {Boolean} [hideValue=true] Specifies that the input field should be masked with ****
    * @return {Promise} Returns a Promise that, when fulfilled,
    * will either initialize the field or return an error.
    */
   field({
     selector,
     type,
-    compareValue,
     css = {},
     placeholder,
     successColor,
@@ -323,6 +323,7 @@ class BondCards {
     disabled,
     readOnly,
     autoFocus,
+    hideValue = true,
   }) {
     const validations = type === "new_pin" ? ["required"] : [];
     if (type === "confirm_pin")
@@ -335,7 +336,7 @@ class BondCards {
       });
 
     const requestParams = {
-      type: "card-number",
+      type: "card-security-code",
       validations: validations,
       name: type,
       css,
@@ -349,6 +350,7 @@ class BondCards {
       disabled,
       readOnly,
       autoFocus,
+      hideValue,
     };
 
     return new Promise((resolve, reject) => {
