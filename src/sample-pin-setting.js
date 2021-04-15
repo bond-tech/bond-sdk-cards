@@ -10,6 +10,7 @@ bondCards
     successColor: "#4F8A10",
     errorColor: "#D8000C",
     placeholder: "1234",
+    hideValue: true,
   })
   .catch((error) => {
     console.error("error", error);
@@ -22,6 +23,7 @@ bondCards
     successColor: "#4F8A10",
     errorColor: "#D8000C",
     placeholder: "5678",
+    hideValue: true,
   })
   .catch((error) => {
     console.error("error", error);
@@ -34,6 +36,7 @@ bondCards
     successColor: "#4F8A10",
     errorColor: "#D8000C",
     placeholder: "5678",
+    hideValue: true,
   })
   .catch((error) => {
     console.error("error", error);

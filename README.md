@@ -211,6 +211,22 @@ bondCards
   });
 ```
 
+4. You can easily control loading with the various methods from the SDK. You should
+   use`.then()`/`.catch()` to handle the successful and failed requests,
+   respectively.
+
+```js
+// Handle show loader
+bondCards
+    .showMultiple(configuration)
+    .then((data) => {
+        // Handle hide loader
+    })
+    .catch((error) => {
+        // Handle hide loader
+    });
+```
+
 ## Available methods
 
 See [API Documentation](https://github.com/bond-tech/bond-sdk-cards/docs/gen/BondCards.html)
