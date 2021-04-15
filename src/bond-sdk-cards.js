@@ -32,6 +32,33 @@ class BondCards {
   }
 
   /**
+   * @description Resolves promise only after iframe async operation is finished
+   * @param {Object} requestParams A configuration needed for request
+   * @param {String} htmlSelector A selector for the field/element where the
+   * iFrame will be placed.
+   * @param {Object} [css={}] An object of CSS rules to apply to the response.
+   * @return {Promise} Returns a Promise that, when fulfilled,
+   * will either return an iFrame with the appropriate data or an error.
+   */
+  _delayedPromise(requestParams, htmlSelector, css ) {
+    return new Promise((resolve, reject) => {
+      const newIframe = this.internalShow.request(requestParams);
+      if (newIframe) {
+        const iframe = newIframe.render(htmlSelector, css);
+        const subscribe = (event) => {
+          if (event.data.messageName === "update" && event.data.payload.revealed === true) {
+            resolve(iframe);
+            window.removeEventListener("message", subscribe);
+          }
+        };
+        window.addEventListener("message", subscribe, false);
+      } else {
+        reject();
+      }
+    });
+  }
+
+  /**
    * The FieldType
    * @typedef {('number'|'cvv'|'expiry')} FieldType
    */
@@ -100,21 +127,7 @@ class BondCards {
         }),
     };
 
-    return new Promise((resolve, reject) => {
-      const newIframe = this.internalShow.request(requestParams);
-      if (newIframe) {
-        const iframe = newIframe.render(htmlSelector, css);
-        const subscribe = (event) => {
-          if (event.data.messageName === "update" && event.data.payload.revealed === true) {
-            resolve(iframe);
-            window.removeEventListener("message", subscribe);
-          }
-        };
-        window.addEventListener("message", subscribe, false);
-      } else {
-        reject();
-      }
-    });
+    return this._delayedPromise(requestParams, htmlSelector, css);
   }
 
   /**
@@ -201,17 +214,17 @@ class BondCards {
         const newIframe = this.internalShow.request(requestParams);
         if (newIframe) {
           const {htmlSelector, css = {}} = fields[requestParams.name];
-            const iframe = newIframe.render(htmlSelector, css);
-            const subscribe = (event) => {
-              if (event.data.messageName === "update" && event.data.payload.revealed === true) {
-                resolve({
-                  params: requestParams,
-                  iframe,
-                });
-                window.removeEventListener("message", subscribe);
-              }
+          const iframe = newIframe.render(htmlSelector, css);
+          const subscribe = (event) => {
+            if (event.data.messageName === "update" && event.data.payload.revealed === true) {
+              resolve({
+                params: requestParams,
+                iframe,
+              });
+              window.removeEventListener("message", subscribe);
             }
-            window.addEventListener("message", subscribe, false);
+          }
+          window.addEventListener("message", subscribe, false);
         } else {
           reject();
         }
@@ -289,14 +302,7 @@ class BondCards {
       htmlWrapper,
     };
 
-    return new Promise((resolve, reject) => {
-      const newIframe = this.internalShow.request(requestParams);
-      if (newIframe) {
-        resolve(newIframe.render(htmlSelector, css));
-      } else {
-        reject();
-      }
-    });
+    return this._delayedPromise(requestParams, htmlSelector, css);
   }
 
   /**
