@@ -15,6 +15,17 @@ const css = {
   color: "rgb(96,107,243)",
 };
 
+const loadingHelper = (status) => {
+  const num = document.getElementById('num-loading');
+  const exp = document.getElementById('exp-loading');
+  const cvv = document.getElementById('cvv-loading');
+
+  [num, exp, cvv].forEach(el => {
+    el.style.opacity = ['success', 'error'].includes(status) ? '0' : '1';
+  })
+  console.log(status);
+}
+
 const reveal = () => {
   // clear current field values
   document.getElementById("num").textContent = "";
@@ -23,6 +34,7 @@ const reveal = () => {
   document.getElementById("toggle").textContent = "Redact";
 
   // use temporary key token to reveal appropriate field values
+  loadingHelper('pending');
   bondCards
     .showMultiple({
       cardId: document.getElementById("card-id").value,
@@ -51,7 +63,11 @@ const reveal = () => {
         }
       },
     })
+    .then(() => {
+      loadingHelper('success');
+    })
     .catch((error) => {
+      loadingHelper('error');
       console.error(error);
     });
 };
