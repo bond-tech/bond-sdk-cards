@@ -32,6 +32,33 @@ class BondCards {
   }
 
   /**
+   * @description Resolves promise only after iframe async operation is finished
+   * @param {Object} requestParams A configuration needed for request
+   * @param {String} htmlSelector A selector for the field/element where the
+   * iFrame will be placed.
+   * @param {Object} [css={}] An object of CSS rules to apply to the response.
+   * @return {Promise} Returns a Promise that, when fulfilled,
+   * will either return an iFrame with the appropriate data or an error.
+   */
+  _delayedPromise(requestParams, htmlSelector, css ) {
+    return new Promise((resolve, reject) => {
+      const newIframe = this.internalShow.request(requestParams);
+      if (newIframe) {
+        const iframe = newIframe.render(htmlSelector, css);
+        const subscribe = (event) => {
+          if (event.data.messageName === "update" && event.data.payload.revealed === true) {
+            resolve(iframe);
+            window.removeEventListener("message", subscribe);
+          }
+        };
+        window.addEventListener("message", subscribe, false);
+      } else {
+        reject();
+      }
+    });
+  }
+
+  /**
    * The FieldType
    * @typedef {('number'|'cvv'|'expiry')} FieldType
    */
@@ -100,14 +127,7 @@ class BondCards {
         }),
     };
 
-    return new Promise((resolve, reject) => {
-      const newIframe = this.internalShow.request(requestParams);
-      if (newIframe) {
-        resolve(newIframe.render(htmlSelector, css));
-      } else {
-        reject();
-      }
-    });
+    return this._delayedPromise(requestParams, htmlSelector, css);
   }
 
   /**
@@ -154,11 +174,11 @@ class BondCards {
     const requestedFields = Object.entries(fields)
       .filter(([field]) => Object.keys(fieldEnum).includes(field))
 
-    if(Object.keys(fields).length !== requestedFields.length){
+    if (Object.keys(fields).length !== requestedFields.length) {
       return Promise.reject(new Error('Incorrect field name present!'));
     }
 
-    if(!requestedFields.length){
+    if (!requestedFields.length) {
       return Promise.reject(new Error('Have to be one or more fields!'));
     }
 
@@ -193,12 +213,18 @@ class BondCards {
       return requestsArr.map(requestParams => new Promise((resolve, reject) => {
         const newIframe = this.internalShow.request(requestParams);
         if (newIframe) {
-          // const {htmlSelector, css = {}} = fields[requestParams.name];
-          // resolve(newIframe.render(htmlSelector, css));
-          resolve({
-            params: requestParams,
-            newIframe,
-          });
+          const {htmlSelector, css = {}} = fields[requestParams.name];
+          const iframe = newIframe.render(htmlSelector, css);
+          const subscribe = (event) => {
+            if (event.data.messageName === "update" && event.data.payload.revealed === true) {
+              resolve({
+                params: requestParams,
+                iframe,
+              });
+              window.removeEventListener("message", subscribe);
+            }
+          }
+          window.addEventListener("message", subscribe, false);
         } else {
           reject();
         }
@@ -208,10 +234,9 @@ class BondCards {
     const DEEP_NUMBER = 5;
     let deep = 0;
     const send = (requestsArr, fulfilledHashMap) => {
-      if(deep === DEEP_NUMBER){
+      if (deep === DEEP_NUMBER) {
         return Object.values(fulfilledHashMap).map(req => {
-          const {htmlSelector, css = {}} = fields[req.params.name];
-          return req.newIframe.render(htmlSelector, css)
+          return req.iframe;
         });
       }
 
@@ -221,10 +246,9 @@ class BondCards {
           .then(response => {
             const successfulRequests = response.filter(item => item.status === 'fulfilled');
 
-            if(successfulRequests.length === requests.length) {
+            if (successfulRequests.length === requests.length) {
               return successfulRequests.map(req => {
-                const {htmlSelector, css = {}} = fields[req.value.params.name];
-                return req.value.newIframe.render(htmlSelector, css)
+                return req.value.iframe;
               });
             }
 
@@ -278,14 +302,7 @@ class BondCards {
       htmlWrapper,
     };
 
-    return new Promise((resolve, reject) => {
-      const newIframe = this.internalShow.request(requestParams);
-      if (newIframe) {
-        resolve(newIframe.render(htmlSelector, css));
-      } else {
-        reject();
-      }
-    });
+    return this._delayedPromise(requestParams, htmlSelector, css);
   }
 
   /**

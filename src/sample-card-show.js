@@ -15,6 +15,12 @@ const css = {
   color: "rgb(96,107,243)",
 };
 
+const loadingHelper = (field, status) => {
+    const el = document.getElementById(`${field}-loading`);
+    el.style.opacity = ['success', 'error'].includes(status) ? '0' : '1';
+    console.log(`${field} ${status}`)
+}
+
 const reveal = () => {
   // clear current field values
   document.getElementById("num").textContent = "";
@@ -23,6 +29,8 @@ const reveal = () => {
   document.getElementById("toggle").textContent = "Redact";
 
   // use temporary key token to reveal appropriate field values
+
+  loadingHelper('num', 'pending')
   bondCards
     .show({
       cardId: document.getElementById("card-id").value,
@@ -36,10 +44,15 @@ const reveal = () => {
       },
       css,
     })
+    .then(data => {
+      loadingHelper('num', 'success')
+    })
     .catch((error) => {
       console.error("error", error);
+      loadingHelper('num', 'error')
     });
 
+  loadingHelper('exp', 'pending')
   bondCards
     .show({
       cardId: document.getElementById("card-id").value,
@@ -53,10 +66,15 @@ const reveal = () => {
       },
       css,
     })
+    .then(data => {
+      loadingHelper('exp', 'success')
+    })
     .catch((error) => {
-      console.error(error);
+      console.error("error", error);
+      loadingHelper('exp', 'error')
     });
 
+  loadingHelper('cvv', 'pending')
   bondCards
     .show({
       cardId: document.getElementById("card-id").value,
@@ -66,8 +84,12 @@ const reveal = () => {
       htmlSelector: "#cvv",
       css,
     })
+    .then(data => {
+      loadingHelper('cvv', 'success')
+    })
     .catch((error) => {
-      console.error(error);
+      console.error("error", error);
+      loadingHelper('cvv', 'error')
     });
 };
 

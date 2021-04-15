@@ -1,6 +1,6 @@
 {
   "name": "bond-sdk-cards",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Bond Card Management SDK",
   "main": "./dist/bond-sdk-cards.js",
   "scripts": {
