@@ -42,8 +42,7 @@ bondCards
     console.error("error", error);
   });
 
-document.querySelector("#cc-form").addEventListener("submit", (e) => {
-  e.preventDefault();
+window.onSubmit = () => {
   bondCards.submit({
     cardId: document.getElementById("card-id").value,
     identity: document.getElementById("identity").value,
@@ -62,4 +61,4 @@ document.querySelector("#cc-form").addEventListener("submit", (e) => {
       document.getElementById("result").innerHTML = errors;
     },
   });
-});
+};
