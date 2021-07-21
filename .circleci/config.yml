@@ -1,5 +1,10 @@
 version: 2.1
 
+parameters:
+  sdk_image:
+    type: string
+    default: ${CIRCLE_WORKFLOW_ID}
+
 #Orb importing
 orbs:
   aws-cli: circleci/aws-cli@1.4.0
