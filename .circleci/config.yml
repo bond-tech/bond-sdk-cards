@@ -7,6 +7,7 @@ parameters:
 
 #Orb importing
 orbs:
+  artifactory-orb: jfrog/artifactory-orb@1.0.1 #Build and push to Artifactory
   aws-cli: circleci/aws-cli@1.4.0
   cypress: cypress-io/cypress@1.28.0
 
