@@ -36,10 +36,10 @@ jobs:
           name: Build and publish to local registry
           command: |
             docker run -d -p 5000:5000 --restart=always --name registry registry:2
-            docker build --build-arg NODE_ENV=NODE_ENV -t localhost:5000/bond-sdk-card-connection:${CIRCLE_WORKFLOW_ID} .
-            docker push localhost:5000/bond-sdk-card-connection:${CIRCLE_WORKFLOW_ID}
+            docker build --build-arg NODE_ENV=NODE_ENV -t localhost:5000/bond-sdk-cards:${CIRCLE_WORKFLOW_ID} .
+            docker push localhost:5000/bond-sdk-cards:${CIRCLE_WORKFLOW_ID}
             mkdir -p saved_images
-            docker save -o saved_images/docker_image_sdk.tar localhost:5000/bond-sdk-card-connection:${CIRCLE_WORKFLOW_ID}
+            docker save -o saved_images/docker_image_sdk.tar localhost:5000/bond-sdk-cards:${CIRCLE_WORKFLOW_ID}
       - persist_to_workspace:
           root: saved_images
           paths:
@@ -67,7 +67,7 @@ jobs:
       - run:
           name: Perform e2e Cypress Tests
           command: |
-            SDK_CONTAINER_ID=$(docker ps -aqf "name=bond-sdk-connect-card-client")
+            SDK_CONTAINER_ID=$(docker ps -aqf "name=bond-sdk-cards-client")
             SDK_CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $SDK_CONTAINER_ID)
             export SDK_CONTAINER_IP=${SDK_CONTAINER_IP}
             docker-compose -f docker-compose-cypress.yaml config

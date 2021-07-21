@@ -3,7 +3,7 @@ services:
   # Cypress container
   cypress:
     environment:
-      - CLIENT_ENDPOINT=http://bond-sdk-connect-card-client:8080
+      - CLIENT_ENDPOINT=http://bond-sdk-cards-client:8080
       - IDENTITY=40ab2f82-c46a-4d36-944e-498e60135b10
       - AUTHORIZATION=Yk2wZGevD58FLTqZaOYg+qAwX1eQcUMUgIWhUEEznMHfVvhRoGcI1j1EXjL7kF3U
       - CYPRESS_CREDIT_CARD_ID=d608b261-f168-4854-9d7c-66b9db5c90a1
@@ -21,9 +21,8 @@ services:
 
     build:
       context: .
-      #context: /Users/chiachichuang/Dev1/bond-sdk-cards
-      #dockerfile: cypress.Dockerfile
+      dockerfile: cypress.Dockerfile
     container_name: cypress
     restart: unless-stopped
-    # extra_hosts:
-    #   - 'bond-sdk-connect-card-client:${SDK_CONTAINER_IP}'
+    extra_hosts:
+      - 'bond-sdk-cards-client:${SDK_CONTAINER_IP}'
