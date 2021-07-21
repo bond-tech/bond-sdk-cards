@@ -7,7 +7,10 @@
     "test": "jest",
     "doc": "gulp doc",
     "start": "webpack serve --config ./webpack.dev.js",
-    "build": "webpack --config ./webpack.prod.js"
+    "build": "webpack --config ./webpack.prod.js",
+    "cypress": "cypress open",
+    "cypress:open": "npx cypress open",
+    "cypress:run": "npx cypress run --headless --browser chrome"
   },
   "author": "Bond",
   "devDependencies": {
@@ -18,9 +21,11 @@
     "babel-polyfill": "^6.26.0",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^5.0.1",
+    "cypress-log-to-output": "^1.1.2",
     "eslint": "~3.7.1",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-loader": "^4.0.2",
+    "eslint-plugin-cypress": "^2.11.3",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.15.1",
@@ -39,7 +44,9 @@
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "babel-core": "^6.26.3",
-    "babel-plugin-transform-runtime": "^6.23.0"
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "cypress": "^7.7.0",
+    "dotenv": "^10.0.0"
   },
   "repository": "git@github.com:bond-tech/bond-sdk-cards.git"
 }

@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  # Cypress container
+  cypress:
+    environment:
+      - CLIENT_ENDPOINT=http://bond-sdk-connect-card-client:8080
+      - IDENTITY=40ab2f82-c46a-4d36-944e-498e60135b10
+      - AUTHORIZATION=Yk2wZGevD58FLTqZaOYg+qAwX1eQcUMUgIWhUEEznMHfVvhRoGcI1j1EXjL7kF3U
+      - CYPRESS_CREDIT_CARD_ID=d608b261-f168-4854-9d7c-66b9db5c90a1
+      - CYPRESS_CREDIT_CARD_NUMBER=5381-0700-1000-2187
+      - CYPRESS_CREDIT_CARD_EXP=07/2023
+      - CYPRESS_CREDIT_CARD_CVV=482
+      - CYPRESS_CREDIT_CARD_PIN=1234
+      - CYPRESS_CREDIT_CARD_NEW_PIN=1357
+      - CYPRESS_DEBIT_CARD_ID=86dcac4b-04ab-479f-8703-a99babcc181b
+      - CYPRESS_DEBIT_CARD_NUMBER=5381-0700-1000-2195
+      - CYPRESS_DEBIT_CARD_EXP=07/2023
+      - CYPRESS_DEBIT_CARD_CVV=135
+      - CYPRESS_DEBIT_CARD_PIN=5678
+      - CYPRESS_DEBIT_CARD_NEW_PIN=2468
+
+    build:
+      context: .
+      #context: /Users/chiachichuang/Dev1/bond-sdk-cards
+      #dockerfile: cypress.Dockerfile
+    container_name: cypress
+    restart: unless-stopped
+    # extra_hosts:
+    #   - 'bond-sdk-connect-card-client:${SDK_CONTAINER_IP}'

@@ -54,8 +54,8 @@ window.onSubmit = () => {
       console.log(status, data);
       document.getElementById(
         "result"
-      ).innerHTML = `current_pin @ service: ${data.current_pin}<br/>
-        new_pin @ service: ${data.new_pin}<br/>`;
+      ).innerHTML = `card_id @ service: ${data.card_id}<br/>
+      pin_changed @ service: ${data.pin_changed}<br/>`;
     },
     errorCallback: function (errors) {
       document.getElementById("result").innerHTML = errors;
