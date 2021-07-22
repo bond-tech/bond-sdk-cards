@@ -7,11 +7,14 @@ services:
       - AUTHORIZATION=Yk2wZGevD58FLTqZaOYg+qAwX1eQcUMUgIWhUEEznMHfVvhRoGcI1j1EXjL7kF3U
 
     build:
-      context: .
+      context:
+        - .
       dockerfile: Dockerfile
       args:
         ARTIFACTORY_USER: ${ARTIFACTORY_USER}
         ARTIFACTORY_API_KEY: ${ARTIFACTORY_API_KEY}
+        ARTIFACTORY_PYPI_REPOSITORY: ${ARTIFACTORY_PYPI_REPOSITORY}
+        ARTIFACTORY_URL: ${ARTIFACTORY_URL}
         ARTIFACTORY_PYPI_REPOSITORY: ${ARTIFACTORY_PYPI_REPOSITORY}
     container_name: bond-sdk-cards-client
     restart: unless-stopped

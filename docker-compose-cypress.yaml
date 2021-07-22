@@ -20,11 +20,14 @@ services:
       - CYPRESS_DEBIT_CARD_NEW_PIN=2468
 
     build:
-      context: .
+      context:
+        - .
       dockerfile: cypress.Dockerfile
       args:
         ARTIFACTORY_USER: ${ARTIFACTORY_USER}
         ARTIFACTORY_API_KEY: ${ARTIFACTORY_API_KEY}
+        ARTIFACTORY_PYPI_REPOSITORY: ${ARTIFACTORY_PYPI_REPOSITORY}
+        ARTIFACTORY_URL: ${ARTIFACTORY_URL}
         ARTIFACTORY_PYPI_REPOSITORY: ${ARTIFACTORY_PYPI_REPOSITORY}
     container_name: cypress
     restart: unless-stopped
