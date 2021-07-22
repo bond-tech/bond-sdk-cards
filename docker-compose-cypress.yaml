@@ -20,8 +20,7 @@ services:
       - CYPRESS_DEBIT_CARD_NEW_PIN=2468
 
     build:
-      context:
-        - .
+      context: .
       dockerfile: cypress.Dockerfile
       args:
         ARTIFACTORY_USER: ${ARTIFACTORY_USER}
