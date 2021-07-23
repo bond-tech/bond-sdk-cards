@@ -27,7 +27,6 @@
     "eslint": "~3.7.1",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-loader": "^4.0.2",
-    "eslint-plugin-cypress": "^2.11.3",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.15.1",
