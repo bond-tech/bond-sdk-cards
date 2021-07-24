@@ -104,14 +104,14 @@ workflows:
 
   pipeline:
     jobs:
-      - build
+      # - build
       # - build:
       #     requires:
       #       - cypress
-      # - publish_local_registry
-      # - cypress:
-      #     requires:
-      #       - publish_local_registry
+      - publish_local_registry
+      - cypress:
+          requires:
+            - publish_local_registry
       # - push_to_cdn:
       #     requires: 
       #       - build

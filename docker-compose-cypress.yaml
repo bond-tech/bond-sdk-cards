@@ -22,12 +22,11 @@ services:
     build:
       context: .
       dockerfile: cypress.Dockerfile
-      args:
-        ARTIFACTORY_USER: ${ARTIFACTORY_USER}
-        ARTIFACTORY_API_KEY: ${ARTIFACTORY_API_KEY}
-        ARTIFACTORY_PYPI_REPOSITORY: ${ARTIFACTORY_PYPI_REPOSITORY}
-        ARTIFACTORY_URL: ${ARTIFACTORY_URL}
-        ARTIFACTORY_PYPI_REPOSITORY: ${ARTIFACTORY_PYPI_REPOSITORY}
+      # args:
+      #   ARTIFACTORY_USER: ${ARTIFACTORY_USER}
+      #   ARTIFACTORY_API_KEY: ${ARTIFACTORY_API_KEY}
+      #   ARTIFACTORY_PYPI_REPOSITORY: ${ARTIFACTORY_PYPI_REPOSITORY}
+      #   ARTIFACTORY_URL: ${ARTIFACTORY_URL}
     container_name: cypress
     restart: unless-stopped
     extra_hosts:
