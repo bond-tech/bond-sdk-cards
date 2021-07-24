@@ -105,9 +105,9 @@ workflows:
   pipeline:
     jobs:
       # - build
-      # - build:
-      #     requires:
-      #       - cypress
+      - build:
+          requires:
+            - cypress
       - publish_local_registry
       - cypress:
           requires:
