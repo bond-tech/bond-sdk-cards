@@ -3,8 +3,8 @@ services:
   client:
     environment:
       - CLIENT_ENDPOINT=http://localhost:8080
-      - IDENTITY=40ab2f82-c46a-4d36-944e-498e60135b10
-      - AUTHORIZATION=Yk2wZGevD58FLTqZaOYg+qAwX1eQcUMUgIWhUEEznMHfVvhRoGcI1j1EXjL7kF3U
+      - IDENTITY=${CYPRESS_IDENTITY}
+      - AUTHORIZATION=${CYPRESS_AUTHORIZATION}
 
     build:
       context: .
