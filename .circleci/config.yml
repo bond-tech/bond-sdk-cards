@@ -84,6 +84,7 @@ jobs:
             export CYPRESS_DEBIT_CARD_CVV=${CYPRESS_DEBIT_CARD_CVV}
             export CYPRESS_DEBIT_CARD_PIN=${CYPRESS_DEBIT_CARD_PIN}
             export CYPRESS_DEBIT_CARD_NEW_PIN=${CYPRESS_DEBIT_CARD_NEW_PIN}
+            export CYPRESS_SDK_CARDS_RECORD_KEYS=${CYPRESS_SDK_CARDS_RECORD_KEYS}
             docker-compose -f docker-compose-cypress.yaml config
             docker-compose -f docker-compose-cypress.yaml up --timeout 600 --exit-code-from cypress
           no_output_timeout: 6m
