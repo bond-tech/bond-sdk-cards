@@ -18,8 +18,6 @@ services:
       - CYPRESS_DEBIT_CARD_CVV=${CYPRESS_DEBIT_CARD_CVV}
       - CYPRESS_DEBIT_CARD_PIN=${CYPRESS_DEBIT_CARD_PIN}
       - CYPRESS_DEBIT_CARD_NEW_PIN=${CYPRESS_DEBIT_CARD_NEW_PIN}
-      - CYPRESS_SDK_CARDS_RECORD_KEYS=${CYPRESS_SDK_CARDS_RECORD_KEYS}
-
     build:
       context: .
       dockerfile: cypress.Dockerfile
@@ -28,6 +26,7 @@ services:
         ARTIFACTORY_API_KEY: ${ARTIFACTORY_API_KEY}
         ARTIFACTORY_PYPI_REPOSITORY: ${ARTIFACTORY_PYPI_REPOSITORY}
         ARTIFACTORY_URL: ${ARTIFACTORY_URL}
+        CYPRESS_SDK_CARDS_RECORD_KEYS: ${CYPRESS_SDK_CARDS_RECORD_KEYS}
     container_name: cypress
     restart: unless-stopped
     extra_hosts:
