@@ -26,7 +26,6 @@ services:
         ARTIFACTORY_API_KEY: ${ARTIFACTORY_API_KEY}
         ARTIFACTORY_PYPI_REPOSITORY: ${ARTIFACTORY_PYPI_REPOSITORY}
         ARTIFACTORY_URL: ${ARTIFACTORY_URL}
-        CYPRESS_SDK_CARDS_RECORD_KEYS: ${CYPRESS_SDK_CARDS_RECORD_KEYS}
     container_name: cypress
     restart: unless-stopped
     extra_hosts:
