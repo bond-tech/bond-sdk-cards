@@ -9,7 +9,6 @@ parameters:
 orbs:
   artifactory-orb: jfrog/artifactory-orb@1.0.1 #Build and push to Artifactory
   aws-cli: circleci/aws-cli@1.4.0
-  cypress: cypress-io/cypress@1.28.0
 
 jobs:
 
@@ -85,6 +84,11 @@ jobs:
             export CYPRESS_DEBIT_CARD_PIN=${CYPRESS_DEBIT_CARD_PIN}
             export CYPRESS_DEBIT_CARD_NEW_PIN=${CYPRESS_DEBIT_CARD_NEW_PIN}
             export CYPRESS_SDK_CARDS_RECORD_KEYS=${CYPRESS_SDK_CARDS_RECORD_KEYS}
+            export COMMIT_INFO_MESSAGE=$(git log --format=%B -n 1 $CIRCLE_SHA1)
+            export COMMIT_INFO_BRANCH=$CIRCLE_BRANCH
+            export COMMIT_INFO_AUTHOR=$CIRCLE_USERNAME
+            export COMMIT_INFO_SHA=$CIRCLE_SHA1
+            export COMMIT_INFO_REMOTE=$CIRCLE_REPOSITORY_URL
             docker-compose -f docker-compose-cypress.yaml config
             docker-compose -f docker-compose-cypress.yaml up --timeout 600 --exit-code-from cypress
           no_output_timeout: 6m
