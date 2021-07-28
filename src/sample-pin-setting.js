@@ -42,8 +42,7 @@ bondCards
     console.error("error", error);
   });
 
-document.querySelector("#cc-form").addEventListener("submit", (e) => {
-  e.preventDefault();
+window.onSubmit = () => {
   bondCards.submit({
     cardId: document.getElementById("card-id").value,
     identity: document.getElementById("identity").value,
@@ -55,11 +54,11 @@ document.querySelector("#cc-form").addEventListener("submit", (e) => {
       console.log(status, data);
       document.getElementById(
         "result"
-      ).innerHTML = `current_pin @ service: ${data.current_pin}<br/>
-        new_pin @ service: ${data.new_pin}<br/>`;
+      ).innerHTML = `card_id @ service: ${data.card_id}<br/>
+      pin_changed @ service: ${data.pin_changed}<br/>`;
     },
     errorCallback: function (errors) {
       document.getElementById("result").innerHTML = errors;
     },
   });
-});
+};

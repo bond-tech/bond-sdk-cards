@@ -1,7 +1,13 @@
 version: 2.1
 
+parameters:
+  sdk_image:
+    type: string
+    default: ${CIRCLE_WORKFLOW_ID}
+
 #Orb importing
 orbs:
+  artifactory-orb: jfrog/artifactory-orb@1.0.1 #Build and push to Artifactory
   aws-cli: circleci/aws-cli@1.4.0
 
 jobs:
@@ -17,6 +23,75 @@ jobs:
           root: dist
           paths:
             - ?*
+
+  publish_local_registry:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - checkout
+      - run:
+          name: Build and publish to local registry
+          command: |
+            docker run -d -p 5000:5000 --restart=always --name registry registry:2
+            docker build --build-arg NODE_ENV=NODE_ENV -t localhost:5000/bond-sdk-cards:${CIRCLE_WORKFLOW_ID} .
+            docker push localhost:5000/bond-sdk-cards:${CIRCLE_WORKFLOW_ID}
+            mkdir -p saved_images
+            docker save -o saved_images/docker_image_sdk.tar localhost:5000/bond-sdk-cards:${CIRCLE_WORKFLOW_ID}
+      - persist_to_workspace:
+          root: saved_images
+          paths:
+            - docker_image_sdk.tar
+
+  cypress:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - setup_remote_docker
+      - checkout
+      - attach_workspace:
+          at: saved_images
+      - artifactory-orb/install
+      - artifactory-orb/configure
+      - artifactory-orb/docker-login:
+          docker-registry: ${ARTIFACTORY_REGISTRY}
+      - run:
+          name: Start containers
+          command: |
+            docker load -i saved_images/docker_image_sdk.tar
+            export SDK_IMAGE=<< pipeline.parameters.sdk_image >>
+            docker-compose -f docker-compose-test.yaml up -d
+            sleep 30
+      - run:
+          name: Perform e2e Cypress Tests
+          command: |
+            SDK_CONTAINER_ID=$(docker ps -aqf "name=bond-sdk-cards-client")
+            SDK_CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $SDK_CONTAINER_ID)
+            export SDK_CONTAINER_IP=${SDK_CONTAINER_IP}
+            export IDENTITY=${CYPRESS_IDENTITY}
+            export AUTHORIZATION=${CYPRESS_AUTHORIZATION}
+            export CYPRESS_CREDIT_CARD_ID=${CYPRESS_CREDIT_CARD_ID}
+            export CYPRESS_CREDIT_CARD_NUMBER=${CYPRESS_CREDIT_CARD_NUMBER}
+            export CYPRESS_CREDIT_CARD_EXP=${CYPRESS_CREDIT_CARD_EXP}
+            export CYPRESS_CREDIT_CARD_CVV=${CYPRESS_CREDIT_CARD_CVV}
+            export CYPRESS_CREDIT_CARD_PIN=${CYPRESS_CREDIT_CARD_PIN}
+            export CYPRESS_CREDIT_CARD_NEW_PIN=${CYPRESS_CREDIT_CARD_NEW_PIN}
+            export CYPRESS_DEBIT_CARD_ID=${CYPRESS_DEBIT_CARD_ID}
+            export CYPRESS_DEBIT_CARD_NUMBER=${CYPRESS_DEBIT_CARD_NUMBER}
+            export CYPRESS_DEBIT_CARD_EXP=${CYPRESS_DEBIT_CARD_EXP}
+            export CYPRESS_DEBIT_CARD_CVV=${CYPRESS_DEBIT_CARD_CVV}
+            export CYPRESS_DEBIT_CARD_PIN=${CYPRESS_DEBIT_CARD_PIN}
+            export CYPRESS_DEBIT_CARD_NEW_PIN=${CYPRESS_DEBIT_CARD_NEW_PIN}
+            export CYPRESS_SDK_CARDS_RECORD_KEYS=${CYPRESS_SDK_CARDS_RECORD_KEYS}
+            export COMMIT_INFO_MESSAGE=$(git log --format=%B -n 1 $CIRCLE_SHA1)
+            export COMMIT_INFO_BRANCH=$CIRCLE_BRANCH
+            export COMMIT_INFO_AUTHOR=$CIRCLE_USERNAME
+            export COMMIT_INFO_SHA=$CIRCLE_SHA1
+            export COMMIT_INFO_REMOTE=$CIRCLE_REPOSITORY_URL
+            docker-compose -f docker-compose-cypress.yaml config
+            docker-compose -f docker-compose-cypress.yaml up --timeout 600 --exit-code-from cypress
+          no_output_timeout: 6m
 
   push_to_cdn:
     executor: aws-cli/default
@@ -44,11 +119,18 @@ jobs:
 
 workflows:
 
-  version: 2.1
+  version: 2
 
   pipeline:
     jobs:
-      - build
+      - build:
+          requires:
+            - cypress
+      - publish_local_registry
+      - cypress:
+          context: bond_cypress_tests
+          requires:
+            - publish_local_registry
       - push_to_cdn:
           requires: 
             - build
