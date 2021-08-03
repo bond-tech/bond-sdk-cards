@@ -12,4 +12,4 @@ RUN npm install
 
 COPY cypress cypress
 COPY cypress.json .
-CMD ["npx","cypress","run","--headless","--browser", "chrome", "--record","--key","d88e9357-758a-4bad-9485-8cf21b7e1643", "--parallel", "--ci-build-id", "$COMMIT_INFO_SHA"]
+CMD ["npx","cypress","run","--headless","--browser", "chrome", "--record","--key","$CYPRESS_RECORD_KEY", "--parallel", "--ci-build-id", "$COMMIT_INFO_SHA"]
