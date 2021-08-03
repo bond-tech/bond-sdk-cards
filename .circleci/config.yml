@@ -45,6 +45,7 @@ jobs:
             - docker_image_sdk.tar
 
   cypress:
+    parallelism: 4
     docker:
       - image: circleci/node:12
     steps:
