@@ -5,6 +5,8 @@ describe("Sample PIN Setting", () => {
 
   beforeEach(() => {
 
+    cy.intercept("/api/v0/cards/set_pin").as("pin_setting");
+
     cy.visitPage("sample_pin_setting");
 
   });
@@ -47,7 +49,7 @@ describe("Sample PIN Setting", () => {
     cy.get("[class=\"panel panel2\"]")
       .get("[class=\"action\"]")
       .find("#submit").click();
-    cy.wait(3000);
+    cy.wait('@pin_setting');
 
     // verify the response indicating pin is changed successfully
     cy.get("[class=\"panel panel2\"]")
@@ -78,7 +80,7 @@ describe("Sample PIN Setting", () => {
       .get("[class=\"action\"]")
       .find("#submit")
       .click();
-      cy.wait(3000);
+    cy.wait('@pin_setting');
 
     // verify the response indicating pin is changed successfully
     cy.get("[class=\"panel panel2\"]")

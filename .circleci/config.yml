@@ -134,3 +134,18 @@ workflows:
       - push_to_cdn:
           requires: 
             - build
+
+  daily_integration_varification:
+    triggers:
+        - schedule:
+            cron: "45 11 * * *"
+            filters:
+              branches:
+                only:
+                  - main
+    jobs:
+      - publish_local_registry
+      - cypress:
+          context: bond_cypress_tests
+          requires:
+            - publish_local_registry
