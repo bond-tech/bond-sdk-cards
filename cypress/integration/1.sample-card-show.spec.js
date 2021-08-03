@@ -35,10 +35,11 @@ describe('Sample Card Show Form', () => {
     // fill out the form (credit card id, temporary token) in brand backend section
     cy.fillBrandBackendSectionOut(Cypress.env('CREDIT_CARD_ID'));
 
-    // click on reveal button
-    cy.get('#toggle').click();
+    cy.intercept("GET",`/api/v0/cards/${Cypress.env('CREDIT_CARD_ID')}`)
+      .as("credit_card_show");
 
-    cy.wait(5000);
+    cy.get('#toggle').click();
+    cy.wait("@credit_card_show");
 
     // varify the response, the returned credit card number, expiration date and cvv
     cy.verifyReavealedInfo( Cypress.env('CREDIT_CARD_NUMBER'),
@@ -65,10 +66,12 @@ describe('Sample Card Show Form', () => {
     // fill out the form (debit card id, temporary token) in brand backend section
     cy.fillBrandBackendSectionOut(Cypress.env('DEBIT_CARD_ID'));
   
+    cy.intercept("GET",`/api/v0/cards/${Cypress.env('DEBIT_CARD_ID')}`)
+      .as("debit_card_show");
+
     // click on reveal button
     cy.get('#toggle').click();
-
-    cy.wait(5000);
+    cy.wait("@debit_card_show");
 
     // varify the response, the returned debit card number, expiration date and cvv
     cy.verifyReavealedInfo( Cypress.env('DEBIT_CARD_NUMBER'),
