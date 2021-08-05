@@ -45,7 +45,6 @@ jobs:
             - docker_image_sdk.tar
 
   cypress:
-    parallelism: 4
     docker:
       - image: circleci/node:12
     steps:
@@ -84,7 +83,7 @@ jobs:
             export CYPRESS_DEBIT_CARD_CVV=${CYPRESS_DEBIT_CARD_CVV}
             export CYPRESS_DEBIT_CARD_PIN=${CYPRESS_DEBIT_CARD_PIN}
             export CYPRESS_DEBIT_CARD_NEW_PIN=${CYPRESS_DEBIT_CARD_NEW_PIN}
-            export SDK_CARDS_CYPRESS_RECORD_KEY=${SDK_CARDS_CYPRESS_RECORD_KEY}
+            export CYPRESS_RECORD_KEY=${CYPRESS_SDK_CARDS_RECORD_KEYS}
             export COMMIT_INFO_MESSAGE=$(git log --format=%B -n 1 $CIRCLE_SHA1)
             export COMMIT_INFO_BRANCH=$CIRCLE_BRANCH
             export COMMIT_INFO_AUTHOR=$CIRCLE_USERNAME
