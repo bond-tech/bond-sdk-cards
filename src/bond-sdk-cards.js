@@ -19,6 +19,7 @@ class BondCards {
     );
     this.internalShow.request = this.internalShow.__proto__.request;
     this.internalShow.replace = this.internalShow.SERIALIZERS.replace;
+    this.internalShow.copyFrom = this.internalShow.__proto__.copyFrom;
 
     // // Internal Collect.js initialization
     this.internalForm = window.VGSCollect.create(
@@ -29,6 +30,12 @@ class BondCards {
     this.internalForm.field = this.internalForm.__proto__.field;
     this.internalForm.submit = this.internalForm.__proto__.submit;
     this.internalForm.reset = this.internalForm.__proto__.reset;
+
+    this.fieldEnum = {
+      number: "card_number",
+      cvv: "cvv",
+      expiry: "expiry_date",
+    };
   }
 
   /**
@@ -62,6 +69,39 @@ class BondCards {
    * The FieldType
    * @typedef {('number'|'cvv'|'expiry')} FieldType
    */
+
+  _createRequestParams({
+    cardId,
+    identity,
+    authorization,
+    field,
+    htmlWrapper,
+    format,
+  }){
+    return {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+        Identity: identity,
+        Authorization: authorization,
+      },
+      path: `${this.BONDSTUDIO}/${cardId}`,
+      name: field,
+      // The JSONPath that the request will show the value for
+      jsonPathSelector: this.fieldEnum[field],
+      htmlWrapper,
+      ...(format.hasOwnProperty("replaceThis") &&
+        format.hasOwnProperty("withThis") && {
+          serializers: [
+            this.internalShow.replace(
+              format.replaceThis,
+              format.withThis,
+              format.count
+            ),
+          ],
+        }),
+    };
+  }
 
   /**
    * @description Show card data including number, expiry, cvv
@@ -97,35 +137,14 @@ class BondCards {
     format = {},
     css = {},
   }) {
-    const fieldEnum = {
-      number: "card_number",
-      cvv: "cvv",
-      expiry: "expiry_date",
-    };
-
-    const requestParams = {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-        Identity: identity,
-        Authorization: authorization,
-      },
-      path: `${this.BONDSTUDIO}/${cardId}`,
-      name: field,
-      // The JSONPath that the request will show the value for
-      jsonPathSelector: fieldEnum[field],
+    const requestParams = this._createRequestParams({
+      cardId,
+      identity,
+      authorization,
+      field,
       htmlWrapper,
-      ...(format.hasOwnProperty("replaceThis") &&
-        format.hasOwnProperty("withThis") && {
-          serializers: [
-            this.internalShow.replace(
-              format.replaceThis,
-              format.withThis,
-              format.count
-            ),
-          ],
-        }),
-    };
+      format,
+    });
 
     return this._delayedPromise(requestParams, htmlSelector, css);
   }
@@ -165,14 +184,8 @@ class BondCards {
     authorization,
     fields,
   }) {
-    const fieldEnum = {
-      number: "card_number",
-      cvv: "cvv",
-      expiry: "expiry_date",
-    };
-
     const requestedFields = Object.entries(fields)
-      .filter(([field]) => Object.keys(fieldEnum).includes(field))
+      .filter(([field]) => Object.keys(this.fieldEnum).includes(field))
 
     if (Object.keys(fields).length !== requestedFields.length) {
       return Promise.reject(new Error('Incorrect field name present!'));
@@ -194,7 +207,7 @@ class BondCards {
           path: `${this.BONDSTUDIO}/${cardId}`,
           name: field,
           // The JSONPath that the request will show the value for
-          jsonPathSelector: fieldEnum[field],
+          jsonPathSelector: this.fieldEnum[field],
           htmlWrapper,
           ...(format.hasOwnProperty("replaceThis") &&
             format.hasOwnProperty("withThis") && {
@@ -376,6 +389,120 @@ class BondCards {
         resolve(newField);
       } else {
         reject(`Field ${name} not initialized.`);
+      }
+    });
+  }
+
+  /**
+   * @description Copy card data (one of number, expiry, cvv)
+   * @param {Object} iframe An iframe object returned from show method
+   * @param {String} htmlSelector A selector for the field/element where the
+   * iFrame will be placed.
+   * @param {Object} [css={}] An object of CSS rules to apply to the response.
+   * @param {String} [text='Copy'] A text for button.
+   * @param {Function} [callback=function(){}] A function to call when copy handler called.
+   * @return {Promise} Returns a Promise that, when fulfilled,
+   * will either return an iFrame with the appropriate data or an error.
+   */
+  copyFromIframe({
+     iframe,
+     htmlSelector,
+     css = {},
+     text = 'Copy',
+     callback = () => {},
+   }) {
+    return new Promise((resolve, reject) => {
+      try {
+        const copyButton = this.internalShow.copyFrom(iframe, {text}, callback);
+
+        const btn = copyButton.render(htmlSelector, css);
+
+        resolve(btn)
+      }catch(error){
+        reject(error)
+      }
+    })
+
+  }
+
+  _createWrapperElement(id) {
+    const div = document.createElement('div');
+    div.style.display = 'none';
+    div.id = id;
+    document.body.append(div);
+  }
+
+  /**
+   * @description Copy card data (one of number, expiry, cvv)
+   * @param {String} cardId The unique ID used to identify a specific card.
+   * @param {String} identity The temporary identity token allowing this call.
+   * @param {String} authorization The temporary authorization token.
+   * @param {FieldType} field The field to get/show
+   * @param {String} [htmlWrapper="text"] The expected type of response data.
+   * 'image' is wrapped in an <img src='<revealed_data>'/> HTML tag. 'text'
+   * would be inserted into a <span> element inside the iframe.
+   * @param {String} htmlSelector A selector for the field/element where the
+   * iFrame will be placed.
+   * @param {Object} [format] An object containing a regex pattern to find and
+   * replace in the response.
+   * @param {String} format.replaceThis String is to be replaced with the
+   * new value. Please use the format where regexp is not enclosed between
+   * slashes but do use quotation marks. ex: '(\\d{4})(\\d{4})(\\d{4})(\\d{4})'
+   * @param {String} format.withThis The string that replaces the substring
+   * specified by the specified regexp. ex: '$1-$2-$3-$4'
+   * @param {String} [format.count] Optional, defines how many times a certain
+   * string should be replaced.
+   * @param {Object} [css={}] An object of CSS rules to apply to the response.
+   * @param {String} [text='Copy'] A text for button.
+   * @param {Function} [callback=function(){}] A function to call when copy handler called.
+   * @return {Promise} Returns a Promise that, when rejected,
+   * will either return an error or nothing.
+   */
+  copy({
+          cardId,
+          identity,
+          authorization,
+          field,
+          htmlWrapper = "text",
+          htmlSelector,
+          format = {},
+          css = {},
+          text = 'Copy',
+          callback = () => {},
+        }) {
+    const requestParams = this._createRequestParams({
+      cardId,
+      identity,
+      authorization,
+      field,
+      htmlWrapper,
+      format,
+    });
+
+    const hiddenId = field + Date.now()
+
+    return new Promise((resolve, reject) => {
+      const newIframe = this.internalShow.request(requestParams);
+      if (newIframe) {
+        this._createWrapperElement(hiddenId);
+
+        const iframe = newIframe.render(`#${hiddenId}`);
+
+        const subscribe = (event) => {
+          if (event.data.messageName === "update" && event.data.payload.revealed === true) {
+
+            const copyButton = this.internalShow.copyFrom(iframe, { text }, callback);
+
+            copyButton.render(htmlSelector, css);
+
+            resolve();
+
+            window.removeEventListener("message", subscribe);
+          }
+        };
+        window.addEventListener("message", subscribe, false);
+      } else {
+        reject();
       }
     });
   }
