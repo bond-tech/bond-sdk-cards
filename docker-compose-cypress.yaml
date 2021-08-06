@@ -24,15 +24,12 @@ services:
       - COMMIT_INFO_AUTHOR=${COMMIT_INFO_AUTHOR}
       - COMMIT_INFO_SHA=${COMMIT_INFO_SHA}
       - COMMIT_INFO_REMOTE=${COMMIT_INFO_REMOTE}
+      - CI_BID=${CI_BID}
     build:
       context: .
       dockerfile: cypress.Dockerfile
-      args:
-        ARTIFACTORY_USER: ${ARTIFACTORY_USER}
-        ARTIFACTORY_API_KEY: ${ARTIFACTORY_API_KEY}
-        ARTIFACTORY_PYPI_REPOSITORY: ${ARTIFACTORY_PYPI_REPOSITORY}
-        ARTIFACTORY_URL: ${ARTIFACTORY_URL}
     container_name: cypress
+    command: npx cypress run --headless --browser chrome --record --parallel --ci-build-id $CI_BID
     restart: unless-stopped
     extra_hosts:
       - 'bond-sdk-cards-client:${SDK_CONTAINER_IP}'
