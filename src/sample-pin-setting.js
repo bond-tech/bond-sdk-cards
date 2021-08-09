@@ -6,7 +6,7 @@ bondCards
   .field({
     selector: "#cc-current-pin",
     type: "current_pin",
-    // disabled: true,
+    disabled: false,
     successColor: "#4F8A10",
     errorColor: "#D8000C",
     placeholder: "1234",
