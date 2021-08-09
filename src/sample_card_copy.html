@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Card Pin Setting Sample</title>
+    <title>Card Fields Show Sample</title>
   </head>
   <body>
     <header>
@@ -33,28 +33,28 @@
       <div class="panel panel2">
         <div class="title">Brand App</div>
         <div class="card">
-          <form id="cc-form">
-            <div class="field">
-              Current PIN
-              <div id="cc-current-pin" class="card-field"></div>
+          <div class="field">
+            Card Number
+            <div style="display: flex;">
+              <div id="num"></div>
+              <div id="num-loading"></div>
+              <div id="num-copy-btn"></div>
             </div>
-            <div class="field">
-              New PIN
-              <div id="cc-new-pin" class="card-field"></div>
-            </div>
-            <div class="field">
-              Conrfim New PIN
-              <div id="cc-confirm-pin" class="card-field"></div>
-            </div>
-          </form>
-        </div>
-        <div>
-          <h5 class="text-center">Response</h5>
-          <pre id="result">Submit a form to see result.</pre>
+          </div>
+          <div class="field">
+            Expiration Date
+            <div id="exp"></div>
+            <div id="exp-copy-btn"></div>
+          </div>
+          <div class="field">
+            CVV2
+            <div id="cvv"></div>
+            <div id="cvv-copy-btn"></div>
+          </div>
         </div>
         <div class="action">
-          <button id="submit" type="submit" onclick="window.onSubmit()"  class="submit-button">
-            Set PIN
+          <button id="toggle" class="submit-button" onclick="window.toggle()">
+            Reveal
           </button>
         </div>
       </div>

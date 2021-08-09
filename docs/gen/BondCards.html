@@ -507,6 +507,332 @@ will either return an iFrame with the appropriate data or an error.</p>
             
 <hr>
 <dt>
+    <h4 class="name" id="copy"><span class="type-signature"></span>copy(iframe, htmlSelector [, css] [, text] [, callback])</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Copy card data (one of number, expiry, cvv)</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Argument</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>iframe</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>An iframe object returned from show method</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>htmlSelector</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>A selector for the field/element where the
+iFrame will be placed.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>css</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last"><p>An object of CSS rules to apply to the response.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>text</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    'Copy'
+                
+                </td>
+            
+
+            <td class="description last"><p>A text for button.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    function(){}
+                
+                </td>
+            
+
+            <td class="description last"><p>A function to call when copy handler called.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Returns a Promise that, when fulfilled,
+will either return an iFrame with the appropriate data or an error.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
     <h4 class="name" id="field"><span class="type-signature"></span>field(selector, type [, css] [, placeholder] [, successColor] [, errorColor] [, color] [, lineHeight] [, fontSize] [, fontFamily] [, disabled] [, readOnly] [, autoFocus] [, hideValue])</h4>
     
     
@@ -2794,7 +3120,7 @@ will either return an iFrame with the appropriate data or an error.</p>
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a>
 	
-		on April 16th 2021, 12:02:00 am
+		on August 9th 2021, 4:05:16 pm
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
