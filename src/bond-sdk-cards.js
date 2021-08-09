@@ -404,7 +404,7 @@ class BondCards {
    * @return {Promise} Returns a Promise that, when fulfilled,
    * will either return an iFrame with the appropriate data or an error.
    */
-  copyFromIframe({
+  copy({
      iframe,
      htmlSelector,
      css = {},
@@ -423,88 +423,6 @@ class BondCards {
       }
     })
 
-  }
-
-  _createWrapperElement(id) {
-    const div = document.createElement('div');
-    div.style.display = 'none';
-    div.id = id;
-    document.body.append(div);
-  }
-
-  /**
-   * @description Copy card data (one of number, expiry, cvv)
-   * @param {String} cardId The unique ID used to identify a specific card.
-   * @param {String} identity The temporary identity token allowing this call.
-   * @param {String} authorization The temporary authorization token.
-   * @param {FieldType} field The field to get/show
-   * @param {String} [htmlWrapper="text"] The expected type of response data.
-   * 'image' is wrapped in an <img src='<revealed_data>'/> HTML tag. 'text'
-   * would be inserted into a <span> element inside the iframe.
-   * @param {String} htmlSelector A selector for the field/element where the
-   * iFrame will be placed.
-   * @param {Object} [format] An object containing a regex pattern to find and
-   * replace in the response.
-   * @param {String} format.replaceThis String is to be replaced with the
-   * new value. Please use the format where regexp is not enclosed between
-   * slashes but do use quotation marks. ex: '(\\d{4})(\\d{4})(\\d{4})(\\d{4})'
-   * @param {String} format.withThis The string that replaces the substring
-   * specified by the specified regexp. ex: '$1-$2-$3-$4'
-   * @param {String} [format.count] Optional, defines how many times a certain
-   * string should be replaced.
-   * @param {Object} [css={}] An object of CSS rules to apply to the response.
-   * @param {String} [text='Copy'] A text for button.
-   * @param {Function} [callback=function(){}] A function to call when copy handler called.
-   * @return {Promise} Returns a Promise that, when rejected,
-   * will either return an error or nothing.
-   */
-  copy({
-          cardId,
-          identity,
-          authorization,
-          field,
-          htmlWrapper = "text",
-          htmlSelector,
-          format = {},
-          css = {},
-          text = 'Copy',
-          callback = () => {},
-        }) {
-    const requestParams = this._createRequestParams({
-      cardId,
-      identity,
-      authorization,
-      field,
-      htmlWrapper,
-      format,
-    });
-
-    const hiddenId = field + Date.now()
-
-    return new Promise((resolve, reject) => {
-      const newIframe = this.internalShow.request(requestParams);
-      if (newIframe) {
-        this._createWrapperElement(hiddenId);
-
-        const iframe = newIframe.render(`#${hiddenId}`);
-
-        const subscribe = (event) => {
-          if (event.data.messageName === "update" && event.data.payload.revealed === true) {
-
-            const copyButton = this.internalShow.copyFrom(iframe, { text }, callback);
-
-            copyButton.render(htmlSelector, css);
-
-            resolve();
-
-            window.removeEventListener("message", subscribe);
-          }
-        };
-        window.addEventListener("message", subscribe, false);
-      } else {
-        reject();
-      }
-    });
   }
 
   /**

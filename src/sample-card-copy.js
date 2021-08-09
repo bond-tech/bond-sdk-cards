@@ -1,18 +1,19 @@
 import BondCards from "./bond-sdk-cards";
+
 import("./sample.css");
 
-const bondCards = new BondCards({ live: true });
+const bondCards = new BondCards({live: true});
 
 let hidden = true;
 const data = {
-  num: "tok_sandbox_21jmguFdztadFN6xfbcDtF",
-  exp: "tok_sandbox_spuC49eoePEtkSFsGvrkdp",
-  cvv: "tok_sandbox_eXEjyhDX64DJrSDs1Mc76m",
+    num: "tok_sandbox_21jmguFdztadFN6xfbcDtF",
+    exp: "tok_sandbox_spuC49eoePEtkSFsGvrkdp",
+    cvv: "tok_sandbox_eXEjyhDX64DJrSDs1Mc76m",
 };
 const css = {
-  "font-family": "Arial, sans-serif",
-  "font-size": "14px",
-  color: "rgb(96,107,243)",
+    "font-family": "Arial, sans-serif",
+    "font-size": "14px",
+    color: "rgb(96,107,243)",
 };
 
 const cssBtn = {
@@ -30,13 +31,13 @@ const loadingHelper = (field, status) => {
 }
 
 const reveal = () => {
-  // clear current field values
-  document.getElementById("num").textContent = "";
-  document.getElementById("exp").textContent = "";
-  document.getElementById("cvv").textContent = "";
-  document.getElementById("toggle").textContent = "Redact";
+    // clear current field values
+    document.getElementById("num").textContent = "";
+    document.getElementById("exp").textContent = "";
+    document.getElementById("cvv").textContent = "";
+    document.getElementById("toggle").textContent = "Redact";
 
-  // use temporary key token to reveal appropriate field values
+    // use temporary key token to reveal appropriate field values
 
     bondCards
         .show({
@@ -53,13 +54,13 @@ const reveal = () => {
         })
         .then(data => {
             loadingHelper('num', 'success')
-            bondCards.copyFromIframe({
+            bondCards.copy({
                 iframe: data,
                 htmlSelector: '#num-copy-btn',
                 callback: (status) => {
-                    if(status === 'success'){
+                    if (status === 'success') {
                         console.log('copied!')
-                    }else{
+                    } else {
                         console.log('error!')
                     }
                 },
@@ -73,55 +74,6 @@ const reveal = () => {
             console.error("error", error);
             loadingHelper('num', 'error')
         });
-
-    bondCards
-        .copy({
-            cardId: document.getElementById("card-id").value,
-            identity: document.getElementById("identity").value,
-            authorization: document.getElementById("authorization").value,
-            field: "expiry",
-            htmlSelector: "#exp-copy-btn",
-            css: cssBtn,
-        })
-        .then(data => {
-            console.log('success')
-        })
-        .catch((error) => {
-            console.error("error", error);
-        });
-
-    bondCards
-        .copy({
-            cardId: document.getElementById("card-id").value,
-            identity: document.getElementById("identity").value,
-            authorization: document.getElementById("authorization").value,
-            field: "cvv",
-            htmlSelector: "#cvv-copy-btn",
-            css: cssBtn,
-        })
-        .then(data => {
-            console.log('success')
-        })
-        .catch((error) => {
-            console.error("error", error);
-        });
 };
 
-const redact = () => {
-  document.getElementById("num").textContent = data.num;
-  document.getElementById("exp").textContent = data.exp;
-  document.getElementById("cvv").textContent = data.cvv;
-  document.getElementById("toggle").textContent = "Reveal";
-};
-
-window.toggle = () => {
-  // if (hidden) {
-  //   reveal();
-  // } else {
-  //   redact();
-  // }
-  // hidden = !hidden;
-};
-
-// redact();
 reveal()
