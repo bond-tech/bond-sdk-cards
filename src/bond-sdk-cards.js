@@ -112,7 +112,6 @@ class BondCards {
       },
       path: `${this.BONDSTUDIO}/${cardId}`,
       name: field,
-      iframeId: "#num",
       // The JSONPath that the request will show the value for
       jsonPathSelector: fieldEnum[field],
       htmlWrapper,
