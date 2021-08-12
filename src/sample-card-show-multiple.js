@@ -2,6 +2,7 @@ import BondCards from "./bond-sdk-cards";
 import("./sample.css");
 
 const bondCards = new BondCards({ live: true });
+let firstRun = true;
 
 let hidden = true;
 const data = {
@@ -32,6 +33,28 @@ const reveal = () => {
   document.getElementById("exp").textContent = "";
   document.getElementById("cvv").textContent = "";
   document.getElementById("toggle").textContent = "Redact";
+
+  if (firstRun) {
+    bondCards
+        .show({
+          cardId: document.getElementById("card-id").value,
+          identity: document.getElementById("identity").value,
+          authorization: document.getElementById("authorization").value,
+          field: "number",
+          htmlSelector: "#num-hidden",
+          format: {
+            replaceThis: "(\\d{4})(\\d{4})(\\d{4})(\\d{4})",
+            withThis: "$1-$2-$3-$4",
+          },
+          css,
+        })
+        .catch((error) => {
+          console.error("error", error);
+          loadingHelper('num', 'error')
+        });
+
+    firstRun = false;
+  }
 
   // use temporary key token to reveal appropriate field values
   loadingHelper('pending');

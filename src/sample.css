@@ -159,3 +159,7 @@ input[type="text"] {
   color: #222;
   text-transform: capitalize;
 }
+
+.hidden {
+  display: none;
+}
