@@ -6,11 +6,14 @@ bondCards
   .field({
     selector: "#cc-current-pin",
     type: "current_pin",
-    disabled: true,
+    disabled: false,
     successColor: "#4F8A10",
     errorColor: "#D8000C",
     placeholder: "1234",
     hideValue: true,
+  })
+  .then(data => {
+    console.log(data)
   })
   .catch((error) => {
     console.error("error", error);
@@ -25,6 +28,9 @@ bondCards
     placeholder: "5678",
     hideValue: true,
   })
+  .then(data => {
+    console.log(data)
+  })
   .catch((error) => {
     console.error("error", error);
   });
@@ -37,6 +43,9 @@ bondCards
     errorColor: "#D8000C",
     placeholder: "5678",
     hideValue: true,
+  })
+  .then(data => {
+    console.log(data)
   })
   .catch((error) => {
     console.error("error", error);

@@ -33,22 +33,23 @@
       <div class="panel panel2">
         <div class="title">Brand App</div>
         <div class="card">
-          <div id="num-hidden" class="card-field hidden"></div>
           <div class="field">
             Card Number
-            <div id="num-loading" class="loader">Loading...</div>
-            <div id="num" class="card-field">
+            <div style="display: flex;">
+              <div id="num"></div>
+              <div id="num-loading"></div>
+              <div id="num-copy-btn"></div>
             </div>
           </div>
           <div class="field">
             Expiration Date
-            <div id="exp-loading" class="loader">Loading...</div>
-            <div id="exp" class="card-field"></div>
+            <div id="exp"></div>
+            <div id="exp-copy-btn"></div>
           </div>
           <div class="field">
             CVV2
-            <div id="cvv-loading" class="loader">Loading...</div>
-            <div id="cvv" class="card-field"></div>
+            <div id="cvv"></div>
+            <div id="cvv-copy-btn"></div>
           </div>
         </div>
         <div class="action">
