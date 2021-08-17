@@ -19,7 +19,7 @@ describe("Sample PIN Setting", () => {
 
   });
 
-  it("fill the brand backend section out in sample pin setting (Credit)", () => {
+  it.skip("fill the brand backend section out in sample pin setting (Credit)", () => {
 
     // find card id, and temporary token inputs
     // and fill the form out
@@ -27,7 +27,7 @@ describe("Sample PIN Setting", () => {
 
   });
 
-  it("reset PIN in sample pin setting (Credit)", () => {
+  it.skip("reset PIN in sample pin setting (Credit)", () => {
 
     // input credit card id, temporary token in brand backend section
     cy.fillBrandBackendSectionOut(Cypress.env("CREDIT_CARD_ID"));
