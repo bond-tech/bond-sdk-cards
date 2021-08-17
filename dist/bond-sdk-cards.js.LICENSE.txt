@@ -1,8 +1,7 @@
 /*!
  * Very Good Security
- * Collect.js version 2.5.0
- * https://js.verygoodvault.com/vgs-collect/2.5.0/vgs-collect.js
- * 1616004708746
+ * Collect.js version 2.9.0
+ * 1625237502491
  */
 
 /*!
