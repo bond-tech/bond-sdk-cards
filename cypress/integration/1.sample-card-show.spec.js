@@ -17,7 +17,7 @@ describe('Sample Card Show Form', () => {
 
   });
 
-  it('fill the form out in sample card show (Credit)', () => {
+  it.skip('fill the form out in sample card show (Credit)', () => {
 
     // find card id, and temporary token inputs
     // and fill the form out - credit catd id
@@ -25,7 +25,7 @@ describe('Sample Card Show Form', () => {
     
   });
 
-  it('reveal card information in sample card show (Credit)', () => {
+  it.skip('reveal card information in sample card show (Credit)', () => {
 
     // clean up default values in card number, expiration date and cvv
     cy.get('#num').invoke('val','')

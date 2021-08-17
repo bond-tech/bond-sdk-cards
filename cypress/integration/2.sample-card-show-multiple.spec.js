@@ -17,7 +17,7 @@ describe('Sample Card Show Form Multiple', () => {
 
   });
 
-  it('fill the form out in sample card show multiple (Credit)', () => {
+  it.skip('fill the form out in sample card show multiple (Credit)', () => {
 
     // find card id, and temporary token inputs
     // and fill the form out
@@ -25,7 +25,7 @@ describe('Sample Card Show Form Multiple', () => {
   
   });
 
-  it('reveal card information in sample card show multiple (Credit)', () => {
+  it.skip('reveal card information in sample card show multiple (Credit)', () => {
 
     // clean up default values in card number, expiration date and cvv
     cy.get('#num').invoke('val','')
