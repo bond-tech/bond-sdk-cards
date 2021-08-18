@@ -8,13 +8,13 @@ parameters:
 #Orb importing
 orbs:
   artifactory-orb: jfrog/artifactory-orb@1.0.1 #Build and push to Artifactory
-  aws-cli: circleci/aws-cli@1.4.0
+  aws-cli: circleci/aws-cli@2.0
 
 jobs:
 
   build:
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:12.22
     steps:
       - checkout
       - run: npm install
@@ -26,7 +26,7 @@ jobs:
 
   publish_local_registry:
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:12.22
     steps:
       - setup_remote_docker:
           docker_layer_caching: true
@@ -45,8 +45,9 @@ jobs:
             - docker_image_sdk.tar
 
   cypress:
+    parallelism: 3
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:12.22
     steps:
       - setup_remote_docker
       - checkout
@@ -89,6 +90,7 @@ jobs:
             export COMMIT_INFO_AUTHOR=$CIRCLE_USERNAME
             export COMMIT_INFO_SHA=$CIRCLE_SHA1
             export COMMIT_INFO_REMOTE=$CIRCLE_REPOSITORY_URL
+            export CI_BID=$CIRCLE_WORKFLOW_ID
             docker-compose -f docker-compose-cypress.yaml config
             docker-compose -f docker-compose-cypress.yaml up --timeout 600 --exit-code-from cypress
           no_output_timeout: 6m
@@ -132,7 +134,7 @@ workflows:
           requires:
             - publish_local_registry
       - push_to_cdn:
-          requires: 
+          requires:
             - build
 
   daily_integration_varification:

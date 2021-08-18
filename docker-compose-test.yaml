@@ -9,11 +9,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        ARTIFACTORY_USER: ${ARTIFACTORY_USER}
-        ARTIFACTORY_API_KEY: ${ARTIFACTORY_API_KEY}
-        ARTIFACTORY_PYPI_REPOSITORY: ${ARTIFACTORY_PYPI_REPOSITORY}
-        ARTIFACTORY_URL: ${ARTIFACTORY_URL}
     container_name: bond-sdk-cards-client
     restart: unless-stopped
     ports:
