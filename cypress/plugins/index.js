@@ -9,7 +9,6 @@
 // https://on.cypress.io/plugins-guide
 // ***********************************************************
 
-
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
@@ -20,22 +19,8 @@
 require('dotenv').config();
 
 module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  require('cypress-log-to-output').install(on, (type, event) => {
-    // return true or false from this plugin to control if the event is logged
-    // `type` is either `console` or `browser`
-    // if `type` is `browser`, `event` is an object of the type `LogEntry`:
-    //  https://chromedevtools.github.io/devtools-protocol/tot/Log#type-LogEntry
-    // if `type` is `console`, `event` is an object of the type passed to
-    // `Runtime.consoleAPICalled`:
-    //  https://chromedevtools.github.io/devtools-protocol/tot/Runtime#event-consoleAPICalled
-    // for example, to only show error events:
-    // if (event.level === 'error' || event.type === 'error') {
-    //   return true;
-    // }
-    // return false;
-
-    return true;
+  require('cypress-terminal-report/src/installLogsPrinter')(on, {
+    printLogsToConsole: 'always',
   });
 
   // `config` is the resolved Cypress config
@@ -43,7 +28,19 @@ module.exports = (on, config) => {
   config.env = {
     identity: process.env.IDENTITY,
     authorization: process.env.AUTHORIZATION,
-    clientEndpoint: process.env.CLIENT_ENDPOINT
+    clientEndpoint: process.env.CLIENT_ENDPOINT,
+    CREDIT_CARD_ID: process.env.CYPRESS_CREDIT_CARD_ID,
+    CREDIT_CARD_NUMBER: process.env.CYPRESS_CREDIT_CARD_NUMBER,
+    CREDIT_CARD_EXP: process.env.CYPRESS_CREDIT_CARD_EXP,
+    CREDIT_CARD_CVV: process.env.CYPRESS_CREDIT_CARD_CVV,
+    CREDIT_CARD_PIN: process.env.CYPRESS_CREDIT_CARD_PIN,
+    CREDIT_CARD_NEW_PIN: process.env.CYPRESS_CREDIT_CARD_NEW_PIN,
+    DEBIT_CARD_ID: process.env.CYPRESS_DEBIT_CARD_ID,
+    DEBIT_CARD_NUMBER: process.env.CYPRESS_DEBIT_CARD_NUMBER,
+    DEBIT_CARD_EXP: process.env.CYPRESS_DEBIT_CARD_EXP,
+    DEBIT_CARD_CVV: process.env.CYPRESS_DEBIT_CARD_CVV,
+    DEBIT_CARD_PIN: process.env.CYPRESS_DEBIT_CARD_PIN,
+    DEBIT_CARD_NEW_PIN: process.env.CYPRESS_DEBIT_CARD_NEW_PIN,
   };
   return config;
 };
