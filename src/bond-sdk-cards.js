@@ -11,10 +11,10 @@ class BondCards {
    * False for sandbox data
    */
   constructor({ live = false }) {
-    this.BONDSTUDIO = "/api/v0/cards";
+    this.BONDSTUDIO = '/api/v0/cards';
     // Internal Show.js initialization
     this.internalShow = window.VGSShow.create(
-      live ? "tntmfo8fafa" : "tntc4x4iymh",
+      live ? 'tntmfo8fafa' : 'tntc4x4iymh',
       function (state) {}
     );
     this.internalShow.request = this.internalShow.__proto__.request;
@@ -23,8 +23,8 @@ class BondCards {
 
     // // Internal Collect.js initialization
     this.internalForm = window.VGSCollect.create(
-      live ? "tntmfo8fafa" : "tntc4x4iymh",
-      live ? "live" : "sandbox",
+      live ? 'tntmfo8fafa' : 'tntc4x4iymh',
+      live ? 'live' : 'sandbox',
       function (state) {}
     );
     this.internalForm.field = this.internalForm.__proto__.field;
@@ -32,10 +32,28 @@ class BondCards {
     this.internalForm.reset = this.internalForm.__proto__.reset;
 
     this.fieldEnum = {
-      number: "card_number",
-      cvv: "cvv",
-      expiry: "expiry_date",
+      number: 'card_number',
+      cvv: 'cvv',
+      expiry: 'expiry_date',
     };
+
+    this.firstrun = true;
+  }
+
+  _internalShowField(requestParams) {
+    // To allow multiple show/hides, it seems show.js needs
+    // a field we leave rendered (but we'll keep it hidden)
+    if (this.firstrun) {
+      const hiddenElm = document.createElement('div');
+      hiddenElm.setAttribute('id', `bond_hidden`);
+      hiddenElm.style.display = 'none';
+      document.body.appendChild(hiddenElm);
+      const newIframe = this.internalShow.request(requestParams);
+      if (newIframe) {
+        newIframe.render(`#bond_hidden`);
+      }
+      this.firstrun = false;
+    }
   }
 
   /**
@@ -47,18 +65,21 @@ class BondCards {
    * @return {Promise} Returns a Promise that, when fulfilled,
    * will either return an iFrame with the appropriate data or an error.
    */
-  _delayedPromise(requestParams, htmlSelector, css ) {
+  _delayedPromise(requestParams, htmlSelector, css) {
     return new Promise((resolve, reject) => {
       const newIframe = this.internalShow.request(requestParams);
       if (newIframe) {
         const iframe = newIframe.render(htmlSelector, css);
         const subscribe = (event) => {
-          if (event.data.messageName === "update" && event.data.payload.revealed === true) {
+          if (
+            event.data.messageName === 'update' &&
+            event.data.payload.revealed === true
+          ) {
             resolve(iframe);
-            window.removeEventListener("message", subscribe);
+            window.removeEventListener('message', subscribe);
           }
         };
-        window.addEventListener("message", subscribe, false);
+        window.addEventListener('message', subscribe, false);
       } else {
         reject();
       }
@@ -77,11 +98,11 @@ class BondCards {
     field,
     htmlWrapper,
     format,
-  }){
+  }) {
     return {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-type": "application/json",
+        'Content-type': 'application/json',
         Identity: identity,
         Authorization: authorization,
       },
@@ -90,8 +111,8 @@ class BondCards {
       // The JSONPath that the request will show the value for
       jsonPathSelector: this.fieldEnum[field],
       htmlWrapper,
-      ...(format.hasOwnProperty("replaceThis") &&
-        format.hasOwnProperty("withThis") && {
+      ...(format.hasOwnProperty('replaceThis') &&
+        format.hasOwnProperty('withThis') && {
           serializers: [
             this.internalShow.replace(
               format.replaceThis,
@@ -132,7 +153,7 @@ class BondCards {
     identity,
     authorization,
     field,
-    htmlWrapper = "text",
+    htmlWrapper = 'text',
     htmlSelector,
     format = {},
     css = {},
@@ -145,6 +166,8 @@ class BondCards {
       htmlWrapper,
       format,
     });
+
+    this._internalShowField(requestParams);
 
     return this._delayedPromise(requestParams, htmlSelector, css);
   }
@@ -178,14 +201,10 @@ class BondCards {
    * @return {Promise} Returns a Promise that, when fulfilled,
    * will either return an iFrame with the appropriate data or an error.
    */
-  showMultiple({
-    cardId,
-    identity,
-    authorization,
-    fields,
-  }) {
-    const requestedFields = Object.entries(fields)
-      .filter(([field]) => Object.keys(this.fieldEnum).includes(field))
+  showMultiple({ cardId, identity, authorization, fields }) {
+    const requestedFields = Object.entries(fields).filter(([field]) =>
+      Object.keys(this.fieldEnum).includes(field)
+    );
 
     if (Object.keys(fields).length !== requestedFields.length) {
       return Promise.reject(new Error('Incorrect field name present!'));
@@ -195,12 +214,12 @@ class BondCards {
       return Promise.reject(new Error('Have to be one or more fields!'));
     }
 
-    const requests = requestedFields
-      .map(([field, { htmlWrapper = "text", format = {} }]) => {
+    const requests = requestedFields.map(
+      ([field, { htmlWrapper = 'text', format = {} }]) => {
         return {
-          method: "GET",
+          method: 'GET',
           headers: {
-            "Content-type": "application/json",
+            'Content-type': 'application/json',
             Identity: identity,
             Authorization: authorization,
           },
@@ -209,8 +228,8 @@ class BondCards {
           // The JSONPath that the request will show the value for
           jsonPathSelector: this.fieldEnum[field],
           htmlWrapper,
-          ...(format.hasOwnProperty("replaceThis") &&
-            format.hasOwnProperty("withThis") && {
+          ...(format.hasOwnProperty('replaceThis') &&
+            format.hasOwnProperty('withThis') && {
               serializers: [
                 this.internalShow.replace(
                   format.replaceThis,
@@ -219,60 +238,76 @@ class BondCards {
                 ),
               ],
             }),
-        }
-      });
+        };
+      }
+    );
+
+    this._internalShowField(requests[0]);
 
     const createPromises = (requestsArr) => {
-      return requestsArr.map(requestParams => new Promise((resolve, reject) => {
-        const newIframe = this.internalShow.request(requestParams);
-        if (newIframe) {
-          const {htmlSelector, css = {}} = fields[requestParams.name];
-          const iframe = newIframe.render(htmlSelector, css);
-          const subscribe = (event) => {
-            if (event.data.messageName === "update" && event.data.payload.revealed === true) {
-              resolve({
-                params: requestParams,
-                iframe,
-              });
-              window.removeEventListener("message", subscribe);
+      return requestsArr.map(
+        (requestParams) =>
+          new Promise((resolve, reject) => {
+            const newIframe = this.internalShow.request(requestParams);
+            if (newIframe) {
+              const { htmlSelector, css = {} } = fields[requestParams.name];
+              const iframe = newIframe.render(htmlSelector, css);
+              const subscribe = (event) => {
+                if (
+                  event.data.messageName === 'update' &&
+                  event.data.payload.revealed === true
+                ) {
+                  resolve({
+                    params: requestParams,
+                    iframe,
+                  });
+                  window.removeEventListener('message', subscribe);
+                }
+              };
+              window.addEventListener('message', subscribe, false);
+            } else {
+              reject();
             }
-          }
-          window.addEventListener("message", subscribe, false);
-        } else {
-          reject();
-        }
-      }));
-    }
+          })
+      );
+    };
 
     const DEEP_NUMBER = 5;
     let deep = 0;
     const send = (requestsArr, fulfilledHashMap) => {
       if (deep === DEEP_NUMBER) {
-        return Object.values(fulfilledHashMap).map(req => {
+        return Object.values(fulfilledHashMap).map((req) => {
           return req.iframe;
         });
       }
 
       const promises = createPromises(requestsArr);
 
-      return Promise.allSettled(promises)
-          .then(response => {
-            const successfulRequests = response.filter(item => item.status === 'fulfilled');
+      return Promise.allSettled(promises).then((response) => {
+        const successfulRequests = response.filter(
+          (item) => item.status === 'fulfilled'
+        );
 
-            if (successfulRequests.length === requests.length) {
-              return successfulRequests.map(req => {
-                return req.value.iframe;
-              });
-            }
-
-            const fulfilledHash  = successfulRequests.reduce((acc, item) => ({...acc, [item.value.params.name]: item.value}), fulfilledHashMap || {});
-
-            const rejected = requestsArr.filter(requestParams => !Object.keys(fulfilledHash).includes(requestParams.name));
-
-            deep++;
-            return send(rejected, fulfilledHash);
+        if (successfulRequests.length === requests.length) {
+          return successfulRequests.map((req) => {
+            return req.value.iframe;
           });
-    }
+        }
+
+        const fulfilledHash = successfulRequests.reduce(
+          (acc, item) => ({ ...acc, [item.value.params.name]: item.value }),
+          fulfilledHashMap || {}
+        );
+
+        const rejected = requestsArr.filter(
+          (requestParams) =>
+            !Object.keys(fulfilledHash).includes(requestParams.name)
+        );
+
+        deep++;
+        return send(rejected, fulfilledHash);
+      });
+    };
 
     return send(requests);
   }
@@ -297,23 +332,25 @@ class BondCards {
     identity,
     authorization,
     reset = false,
-    htmlWrapper = "text",
+    htmlWrapper = 'text',
     htmlSelector,
     css = {},
   }) {
     const requestParams = {
-      method: reset ? "PATCH" : "GET",
+      method: reset ? 'PATCH' : 'GET',
       headers: {
-        "Content-type": "application/json",
+        'Content-type': 'application/json',
         Identity: identity,
         Authorization: authorization,
       },
       path: `${this.BONDSTUDIO}/${cardId}/pin`,
-      name: "pin",
+      name: 'pin',
       // The JSONPath that the request will show the value for
-      jsonPathSelector: "pin",
+      jsonPathSelector: 'pin',
       htmlWrapper,
     };
+
+    this._internalShowField(requestParams);
 
     return this._delayedPromise(requestParams, htmlSelector, css);
   }
@@ -355,18 +392,18 @@ class BondCards {
     autoFocus,
     hideValue = true,
   }) {
-    const validations = type === "new_pin" ? ["required"] : [];
-    if (type === "confirm_pin")
+    const validations = type === 'new_pin' ? ['required'] : [];
+    if (type === 'confirm_pin')
       validations.push({
-        type: "compareValue",
+        type: 'compareValue',
         params: {
-          field: "new_pin",
-          function: "match",
+          field: 'new_pin',
+          function: 'match',
         },
       });
 
     const requestParams = {
-      type: "card-security-code",
+      type: 'card-security-code',
       validations: validations,
       name: type,
       css,
@@ -404,25 +441,22 @@ class BondCards {
    * @return {Promise} Returns a Promise that, when fulfilled,
    * will either return an iFrame with the appropriate data or an error.
    */
-  copy({
-     iframe,
-     htmlSelector,
-     css = {},
-     text = 'Copy',
-     callback = () => {},
-   }) {
+  copy({ iframe, htmlSelector, css = {}, text = 'Copy', callback = () => {} }) {
     return new Promise((resolve, reject) => {
       try {
-        const copyButton = this.internalShow.copyFrom(iframe, {text}, callback);
+        const copyButton = this.internalShow.copyFrom(
+          iframe,
+          { text },
+          callback
+        );
 
         const btn = copyButton.render(htmlSelector, css);
 
-        resolve(btn)
-      }catch(error){
-        reject(error)
+        resolve(btn);
+      } catch (error) {
+        reject(error);
       }
-    })
-
+    });
   }
 
   /**
@@ -461,9 +495,9 @@ class BondCards {
     errorCallback,
   }) {
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-type": "application/json",
+        'Content-type': 'application/json',
         Identity: identity,
         Authorization: authorization,
       },
@@ -483,7 +517,7 @@ class BondCards {
       if (submitResult) {
         resolve(submitResult);
       } else {
-        reject("Form Submit failed.");
+        reject('Form Submit failed.');
       }
     });
   }

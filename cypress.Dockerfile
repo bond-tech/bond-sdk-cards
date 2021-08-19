@@ -6,7 +6,7 @@
 #   install cypress, copy config files, run
 #
 # # # # # # # # # # # # # # # # # # # # 
-FROM cypress/included:7.5.0
+FROM cypress/included:8.3.0
 COPY package.json .
 RUN npm install
 
