@@ -45,7 +45,7 @@ module.exports = {
     open: true,
     compress: true,
     hot: true,
-    port: 8080,
+    port: 8087,
   },
   plugins: [
     new CleanWebpackPlugin(),

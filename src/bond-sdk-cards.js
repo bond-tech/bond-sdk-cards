@@ -12,6 +12,7 @@ class BondCards {
    */
   constructor({ live = false }) {
     this.BONDSTUDIO = '/api/v0/cards';
+
     // Internal Show.js initialization
     this.internalShow = window.VGSShow.create(
       live ? 'tntmfo8fafa' : 'tntc4x4iymh',
@@ -21,15 +22,19 @@ class BondCards {
     this.internalShow.replace = this.internalShow.SERIALIZERS.replace;
     this.internalShow.copyFrom = this.internalShow.__proto__.copyFrom;
 
-    // // Internal Collect.js initialization
-    this.internalForm = window.VGSCollect.create(
-      live ? 'tntmfo8fafa' : 'tntc4x4iymh',
-      live ? 'live' : 'sandbox',
-      function (state) {}
-    );
-    this.internalForm.field = this.internalForm.__proto__.field;
-    this.internalForm.submit = this.internalForm.__proto__.submit;
-    this.internalForm.reset = this.internalForm.__proto__.reset;
+    this.createFormInstance = () => {
+      // // Internal Collect.js initialization
+      this.internalForm = window.VGSCollect.create(
+          live ? 'tntmfo8fafa' : 'tntc4x4iymh',
+          live ? 'live' : 'sandbox',
+          function (state) {}
+      );
+      this.internalForm.field = this.internalForm.__proto__.field;
+      this.internalForm.submit = this.internalForm.__proto__.submit;
+      this.internalForm.reset = this.internalForm.__proto__.reset;
+    }
+
+    this.createFormInstance();
 
     this.fieldEnum = {
       number: 'card_number',
@@ -519,6 +524,7 @@ class BondCards {
       } else {
         reject('Form Submit failed.');
       }
+      this.createFormInstance();
     });
   }
 
