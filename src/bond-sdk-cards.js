@@ -22,7 +22,11 @@ class BondCards {
     this.internalShow.replace = this.internalShow.SERIALIZERS.replace;
     this.internalShow.copyFrom = this.internalShow.__proto__.copyFrom;
 
-    this.createFormInstance = () => {
+    /**
+     * @description Create new form instance
+     * @return none
+     */
+    this.resetFormInstance = () => {
       // // Internal Collect.js initialization
       this.internalForm = window.VGSCollect.create(
           live ? 'tntmfo8fafa' : 'tntc4x4iymh',
@@ -34,7 +38,7 @@ class BondCards {
       this.internalForm.reset = this.internalForm.__proto__.reset;
     }
 
-    this.createFormInstance();
+    this.resetFormInstance();
 
     this.fieldEnum = {
       number: 'card_number',
@@ -524,7 +528,7 @@ class BondCards {
       } else {
         reject('Form Submit failed.');
       }
-      this.createFormInstance();
+      this.resetFormInstance();
     });
   }
 
