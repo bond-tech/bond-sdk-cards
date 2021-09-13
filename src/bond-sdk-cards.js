@@ -434,7 +434,7 @@ class BondCards {
       if (newField) {
         resolve(newField);
       } else {
-        reject(`Field ${name} not initialized.`);
+        reject(`Field ${type} not initialized.`);
       }
     });
   }
@@ -525,10 +525,10 @@ class BondCards {
       );
       if (submitResult) {
         resolve(submitResult);
+        this.resetFormInstance();
       } else {
         reject('Form Submit failed.');
       }
-      this.resetFormInstance();
     });
   }
 
