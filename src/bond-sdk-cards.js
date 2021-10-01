@@ -513,6 +513,7 @@ class BondCards {
       data: {
         card_id: cardId,
         new_pin: newPin,
+        current_pin: currentPin,
       },
     };
 
