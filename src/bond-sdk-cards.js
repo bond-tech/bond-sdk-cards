@@ -13,17 +13,29 @@ class BondCards {
   constructor({ live = false }) {
     this.BONDSTUDIO = '/api/v0/cards';
 
+    // Internal Show.js initialization
+    this.internalShow = window.VGSShow.create(
+      live ? 'tntmfo8fafa' : 'tntc4x4iymh',
+      function (state) {}
+    );
+    this.internalShow.request = this.internalShow.__proto__.request;
+    this.internalShow.replace = this.internalShow.SERIALIZERS.replace;
+    this.internalShow.copyFrom = this.internalShow.__proto__.copyFrom;
+
     /**
      * @description Create new form instance
      * @return none
      */
     this.resetFormInstance = () => {
-      // Internal Collect.js initialization
+      // // Internal Collect.js initialization
       this.internalForm = window.VGSCollect.create(
           live ? 'tntmfo8fafa' : 'tntc4x4iymh',
           live ? 'live' : 'sandbox',
           function (state) {}
       );
+      this.internalForm.field = this.internalForm.__proto__.field;
+      this.internalForm.submit = this.internalForm.__proto__.submit;
+      this.internalForm.reset = this.internalForm.__proto__.reset;
     }
 
     this.resetFormInstance();
@@ -33,6 +45,24 @@ class BondCards {
       cvv: 'cvv',
       expiry: 'expiry_date',
     };
+
+    this.firstrun = true;
+  }
+
+  _internalShowField(requestParams) {
+    // To allow multiple show/hides, it seems show.js needs
+    // a field we leave rendered (but we'll keep it hidden)
+    if (this.firstrun) {
+      const hiddenElm = document.createElement('div');
+      hiddenElm.setAttribute('id', `bond_hidden`);
+      hiddenElm.style.display = 'none';
+      document.body.appendChild(hiddenElm);
+      const newIframe = this.internalShow.request(requestParams);
+      if (newIframe) {
+        newIframe.render(`#bond_hidden`);
+      }
+      this.firstrun = false;
+    }
   }
 
   /**
@@ -146,6 +176,8 @@ class BondCards {
       format,
     });
 
+    this._internalShowField(requestParams);
+
     return this._delayedPromise(requestParams, htmlSelector, css);
   }
 
@@ -218,6 +250,8 @@ class BondCards {
         };
       }
     );
+
+    this._internalShowField(requests[0]);
 
     const createPromises = (requestsArr) => {
       return requestsArr.map(
@@ -324,6 +358,8 @@ class BondCards {
       jsonPathSelector: 'pin',
       htmlWrapper,
     };
+
+    this._internalShowField(requestParams);
 
     return this._delayedPromise(requestParams, htmlSelector, css);
   }
