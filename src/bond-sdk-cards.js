@@ -13,29 +13,17 @@ class BondCards {
   constructor({ live = false }) {
     this.BONDSTUDIO = '/api/v0/cards';
 
-    // Internal Show.js initialization
-    this.internalShow = window.VGSShow.create(
-      live ? 'tntmfo8fafa' : 'tntc4x4iymh',
-      function (state) {}
-    );
-    this.internalShow.request = this.internalShow.__proto__.request;
-    this.internalShow.replace = this.internalShow.SERIALIZERS.replace;
-    this.internalShow.copyFrom = this.internalShow.__proto__.copyFrom;
-
     /**
      * @description Create new form instance
      * @return none
      */
     this.resetFormInstance = () => {
-      // // Internal Collect.js initialization
+      // Internal Collect.js initialization
       this.internalForm = window.VGSCollect.create(
           live ? 'tntmfo8fafa' : 'tntc4x4iymh',
           live ? 'live' : 'sandbox',
           function (state) {}
       );
-      this.internalForm.field = this.internalForm.__proto__.field;
-      this.internalForm.submit = this.internalForm.__proto__.submit;
-      this.internalForm.reset = this.internalForm.__proto__.reset;
     }
 
     this.resetFormInstance();
