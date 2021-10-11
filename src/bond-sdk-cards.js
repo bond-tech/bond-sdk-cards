@@ -45,24 +45,6 @@ class BondCards {
       cvv: 'cvv',
       expiry: 'expiry_date',
     };
-
-    this.firstrun = true;
-  }
-
-  _internalShowField(requestParams) {
-    // To allow multiple show/hides, it seems show.js needs
-    // a field we leave rendered (but we'll keep it hidden)
-    if (this.firstrun) {
-      const hiddenElm = document.createElement('div');
-      hiddenElm.setAttribute('id', `bond_hidden`);
-      hiddenElm.style.display = 'none';
-      document.body.appendChild(hiddenElm);
-      const newIframe = this.internalShow.request(requestParams);
-      if (newIframe) {
-        newIframe.render(`#bond_hidden`);
-      }
-      this.firstrun = false;
-    }
   }
 
   /**
@@ -176,8 +158,6 @@ class BondCards {
       format,
     });
 
-    this._internalShowField(requestParams);
-
     return this._delayedPromise(requestParams, htmlSelector, css);
   }
 
@@ -250,8 +230,6 @@ class BondCards {
         };
       }
     );
-
-    this._internalShowField(requests[0]);
 
     const createPromises = (requestsArr) => {
       return requestsArr.map(
@@ -358,8 +336,6 @@ class BondCards {
       jsonPathSelector: 'pin',
       htmlWrapper,
     };
-
-    this._internalShowField(requestParams);
 
     return this._delayedPromise(requestParams, htmlSelector, css);
   }
