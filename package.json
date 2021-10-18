@@ -48,5 +48,6 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "dotenv": "^10.0.0"
   },
-  "repository": "git@github.com:bond-tech/bond-sdk-cards.git"
+  "repository": "git@github.com:bond-tech/bond-sdk-cards.git",
+  "browserslist": "> 0.25%, not dead"
 }
