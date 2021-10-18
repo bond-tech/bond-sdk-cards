@@ -6,6 +6,6 @@
 
 /*!
  * Very Good Security
- * Show.js version 1.3
- * 1616175340951
+ * Show.js version 1.4
+ * 1632914767270
  */
