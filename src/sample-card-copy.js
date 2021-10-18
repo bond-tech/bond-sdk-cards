@@ -35,7 +35,6 @@ const reveal = () => {
     document.getElementById("num").textContent = "";
     document.getElementById("exp").textContent = "";
     document.getElementById("cvv").textContent = "";
-    document.getElementById("toggle").textContent = "Redact";
 
     // use temporary key token to reveal appropriate field values
 
@@ -65,6 +64,10 @@ const reveal = () => {
                     }
                 },
                 text: 'Copy data',
+                format: {
+                  replaceThis: '(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})',
+                  withThis: '$1$2$3$4',
+                },
                 css: cssBtn,
             })
                 .then((data) => console.log(data))
@@ -76,4 +79,4 @@ const reveal = () => {
         });
 };
 
-reveal()
+window.toogle = reveal

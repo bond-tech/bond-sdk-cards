@@ -77,6 +77,23 @@ class BondCards {
     });
   }
 
+  _formatToSerializers(format) {
+    if (
+      format.hasOwnProperty('replaceThis') &&
+      format.hasOwnProperty('withThis')
+    ) {
+      return {
+        serializers: [
+          this.internalShow.replace(
+            format.replaceThis,
+            format.withThis,
+            format.count
+          ),
+        ],
+      };
+    }
+  }
+
   /**
    * The FieldType
    * @typedef {('number'|'cvv'|'expiry')} FieldType
@@ -102,16 +119,7 @@ class BondCards {
       // The JSONPath that the request will show the value for
       jsonPathSelector: this.fieldEnum[field],
       htmlWrapper,
-      ...(format.hasOwnProperty('replaceThis') &&
-        format.hasOwnProperty('withThis') && {
-          serializers: [
-            this.internalShow.replace(
-              format.replaceThis,
-              format.withThis,
-              format.count
-            ),
-          ],
-        }),
+      ...(this._formatToSerializers(format) ?? {}),
     };
   }
 
@@ -217,16 +225,7 @@ class BondCards {
           // The JSONPath that the request will show the value for
           jsonPathSelector: this.fieldEnum[field],
           htmlWrapper,
-          ...(format.hasOwnProperty('replaceThis') &&
-            format.hasOwnProperty('withThis') && {
-              serializers: [
-                this.internalShow.replace(
-                  format.replaceThis,
-                  format.withThis,
-                  format.count
-                ),
-              ],
-            }),
+          ...(this._formatToSerializers(format) ?? {}),
         };
       }
     );
@@ -422,16 +421,33 @@ class BondCards {
    * iFrame will be placed.
    * @param {Object} [css={}] An object of CSS rules to apply to the response.
    * @param {String} [text='Copy'] A text for button.
+   * @param {Object} [format] An object containing a regex pattern to find and
+   * replace in the copied text.
+   * @param {String} format.replaceThis String is to be replaced with the
+   * new value. Please use the format where regexp is not enclosed between
+   * slashes but do use quotation marks. ex:
+   * '(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})'
+   * @param {String} format.withThis The string that replaces the substring
+   * specified by the specified regexp. ex: '$1$2$3$4'
+   * @param {String} [format.count] Optional, defines how many times a certain
+   * string should be replaced.
    * @param {Function} [callback=function(){}] A function to call when copy handler called.
    * @return {Promise} Returns a Promise that, when fulfilled,
    * will either return an iFrame with the appropriate data or an error.
    */
-  copy({ iframe, htmlSelector, css = {}, text = 'Copy', callback = () => {} }) {
+  copy({
+    iframe,
+    htmlSelector,
+    css = {},
+    text = 'Copy',
+    format,
+    callback = () => {},
+  }) {
     return new Promise((resolve, reject) => {
       try {
         const copyButton = this.internalShow.copyFrom(
           iframe,
-          { text },
+          { text, ...(this._formatToSerializers(format) ?? {}) },
           callback
         );
 
