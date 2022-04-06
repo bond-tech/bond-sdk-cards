@@ -1,5 +1,7 @@
 # Bond Card Management JavaScript SDK
 
+**Note: this repository will be deprecated soon in favor of a combined SDK for Cards and External Account linking.**
+
 Storing and processing card details including primary account number (PAN), CVV, expiration date, and personal identification number (PIN) involves complying with PCI DSS data security requirements. PCI compliance typically requires high overhead, so Bond created an SDK that vaults and tokenizes this card information. Using the below SDK, you can easily allow your customers to retrieve their card details, set PINs, and reset PINS without entering PCI scope, or worrying about seeing and storing your customers' sensitive card details.
 
 -This overview outlines Requirements, Installation, and Usage.
